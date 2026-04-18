@@ -31,7 +31,6 @@
     overflow-x: hidden;
   }
 
-  /* Grid background */
   body::before {
     content: '';
     position: fixed;
@@ -45,7 +44,6 @@
     z-index: 0;
   }
 
-  /* Glow blob */
   body::after {
     content: '';
     position: fixed;
@@ -86,6 +84,12 @@
 
   .logo span { color: var(--text); }
 
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
   .tag {
     font-size: 10px;
     letter-spacing: 0.18em;
@@ -95,10 +99,44 @@
     text-transform: uppercase;
   }
 
-  /* ── HERO ── */
-  .hero {
-    margin-bottom: 56px;
+  /* ── TAB SWITCHER ── */
+  .tab-bar {
+    display: flex;
+    gap: 0;
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+    width: fit-content;
   }
+
+  .tab-btn {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 10px 24px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-right: 1px solid var(--border);
+  }
+
+  .tab-btn:last-child { border-right: none; }
+
+  .tab-btn.active {
+    background: var(--blue-dim);
+    color: var(--blue);
+  }
+
+  .tab-btn:hover:not(.active) {
+    color: var(--text);
+    background: rgba(255,255,255,0.02);
+  }
+
+  /* ── HERO ── */
+  .hero { margin-bottom: 40px; }
 
   .hero h1 {
     font-family: 'Syne', sans-serif;
@@ -123,7 +161,7 @@
     max-width: 480px;
   }
 
-  /* ── INPUT PANEL ── */
+  /* ── PANEL ── */
   .panel {
     background: var(--panel);
     border: 1px solid var(--border);
@@ -165,10 +203,34 @@
   }
 
   textarea::placeholder { color: var(--muted); }
+  textarea:focus { border-color: rgba(0,255,255,0.3); }
 
-  textarea:focus {
-    border-color: rgba(0,255,255,0.3);
+  input[type="text"] {
+    width: 100%;
+    background: var(--deep);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
   }
+
+  input[type="text"]::placeholder { color: var(--muted); }
+  input[type="text"]:focus { border-color: rgba(0,255,255,0.3); }
+
+  .input-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .input-group { margin-bottom: 16px; }
 
   .meta-row {
     display: flex;
@@ -177,11 +239,9 @@
     margin-top: 12px;
   }
 
-  #charCount {
-    font-size: 11px;
-    color: var(--muted);
-  }
+  #charCount, #certCharCount { font-size: 11px; color: var(--muted); }
 
+  /* ── BUTTONS ── */
   .btn {
     font-family: 'Syne', sans-serif;
     font-weight: 700;
@@ -211,19 +271,38 @@
 
   .btn:hover::before { transform: scaleX(1); }
   .btn:hover { color: var(--black); }
-
   .btn span { position: relative; z-index: 1; }
 
-  .btn:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
-
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn:disabled::before { transform: scaleX(0) !important; }
   .btn:disabled { color: var(--blue) !important; }
 
+  .btn-green {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .btn-green::before { background: var(--green); }
+  .btn-green:hover { color: var(--black); }
+
+  .btn-ghost {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
+
   /* ── RESULT ── */
-  #result {
+  #result, #certResult {
     display: none;
     animation: fadeUp 0.4s ease forwards;
   }
@@ -265,15 +344,8 @@
     flex-shrink: 0;
   }
 
-  .ring-wrap svg {
-    transform: rotate(-90deg);
-  }
-
-  .ring-bg {
-    fill: none;
-    stroke: var(--border);
-    stroke-width: 8;
-  }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: var(--border); stroke-width: 8; }
 
   .ring-fg {
     fill: none;
@@ -281,8 +353,7 @@
     stroke-linecap: round;
     stroke-dasharray: 345;
     stroke-dashoffset: 345;
-    transition: stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1),
-                stroke 0.4s;
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1), stroke 0.4s;
   }
 
   .ring-center {
@@ -309,10 +380,7 @@
     margin-top: 4px;
   }
 
-  .verdict-block {
-    flex: 1;
-    min-width: 200px;
-  }
+  .verdict-block { flex: 1; min-width: 200px; }
 
   .verdict-tag {
     display: inline-block;
@@ -338,13 +406,8 @@
     line-height: 1.1;
   }
 
-  .verdict-sub {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.6;
-  }
+  .verdict-sub { font-size: 12px; color: var(--muted); line-height: 1.6; }
 
-  /* Breakdown */
   .breakdown-label {
     font-size: 10px;
     letter-spacing: 0.2em;
@@ -353,12 +416,7 @@
     margin-bottom: 16px;
   }
 
-  .signal-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+  .signal-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
 
   .signal-item {
     display: flex;
@@ -377,44 +435,210 @@
 
   .signal-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
 
-  .signal-text strong {
-    display: block;
-    color: var(--text);
-    margin-bottom: 2px;
-    font-weight: 500;
-  }
-
+  .signal-text strong { display: block; color: var(--text); margin-bottom: 2px; font-weight: 500; }
   .signal-text span { color: var(--muted); }
 
-  /* Actions */
-  .actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 28px;
-    flex-wrap: wrap;
-  }
+  .actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
 
-  .btn-ghost {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    background: transparent;
+  /* ── CERTIFICATE ── */
+  .cert-card {
+    background: var(--panel);
     border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
   }
 
-  .btn-ghost:hover {
-    border-color: var(--blue);
+  .cert-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--green), var(--blue), var(--green), transparent);
+  }
+
+  .cert-header {
+    padding: 28px 32px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .cert-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: 0.12em;
     color: var(--blue);
   }
 
+  .cert-logo span { color: var(--text); }
+  .cert-logo small {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-top: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 400;
+  }
+
+  .cert-badge {
+    background: rgba(0,255,157,0.08);
+    border: 1px solid var(--green);
+    color: var(--green);
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    padding: 6px 16px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .cert-badge::before {
+    content: '✓';
+    font-size: 13px;
+  }
+
+  .cert-body { padding: 28px 32px; }
+
+  .cert-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .cert-doc-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .cert-author {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .cert-author strong { color: var(--blue); }
+
+  .cert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .cert-stat {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    padding: 16px;
+  }
+
+  .cert-stat-label {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .cert-stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  .cert-stat-value.green { color: var(--green); }
+  .cert-stat-value.blue { color: var(--blue); }
+  .cert-stat-value.text { font-size: 14px; color: var(--text); }
+
+  .cert-meta {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+
+  .cert-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .cert-meta-row:last-child { border-bottom: none; }
+  .cert-meta-row span:first-child { color: var(--muted); letter-spacing: 0.1em; }
+  .cert-meta-row span:last-child { color: var(--text); font-family: 'IBM Plex Mono', monospace; }
+
+  .cert-hash {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    word-break: break-all;
+    color: var(--blue);
+    opacity: 0.7;
+  }
+
+  .cert-footer {
+    padding: 16px 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .cert-footer-text {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+  }
+
+  .cert-id {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--blue);
+    letter-spacing: 0.1em;
+  }
+
+  /* Error panel */
+  .cert-error {
+    background: rgba(255, 60, 95, 0.06);
+    border: 1px solid var(--red);
+    padding: 24px 28px;
+  }
+
+  .cert-error-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    color: var(--red);
+    font-size: 14px;
+    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+  }
+
+  .cert-error-msg { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
   /* Loading */
-  #loader {
+  #loader, #certLoader {
     display: none;
     align-items: center;
     gap: 14px;
@@ -424,10 +648,7 @@
     letter-spacing: 0.08em;
   }
 
-  .dots {
-    display: flex;
-    gap: 5px;
-  }
+  .dots { display: flex; gap: 5px; }
 
   .dot {
     width: 6px;
@@ -445,6 +666,9 @@
     50%       { opacity: 1; transform: scale(1); }
   }
 
+  /* Divider */
+  .divider { height: 1px; background: var(--border); margin: 28px 0; }
+
   /* Footer */
   footer {
     margin-top: 64px;
@@ -457,24 +681,8 @@
     gap: 12px;
   }
 
-  footer span {
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.06em;
-  }
-
-  footer a {
-    color: var(--blue);
-    text-decoration: none;
-    font-size: 11px;
-  }
-
-  /* Divider */
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 28px 0;
-  }
+  footer span { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+  footer a { color: var(--blue); text-decoration: none; font-size: 11px; }
 
   /* Toast */
   .toast {
@@ -494,6 +702,34 @@
   }
 
   .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* Tab sections */
+  .tab-section { display: none; }
+  .tab-section.active { display: block; }
+
+  /* Style fingerprint bars */
+  .style-bars { margin-top: 20px; }
+  .style-bar-row { margin-bottom: 12px; }
+  .style-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+  .style-bar-track {
+    height: 4px;
+    background: var(--border);
+    position: relative;
+  }
+  .style-bar-fill {
+    height: 100%;
+    background: var(--blue);
+    transition: width 1s cubic-bezier(0.16,1,0.3,1);
+    width: 0%;
+  }
 </style>
 </head>
 <body>
@@ -501,280 +737,279 @@
 
   <nav>
     <div class="logo">LUM<span>ORA</span></div>
-    <div class="tag">Beta v0.1</div>
+    <div class="nav-right">
+      <div class="tag">Beta v0.2</div>
+    </div>
   </nav>
 
-  <div class="hero">
-    <h1>The <em>Trust Layer</em><br>for AI Content.</h1>
-    <p>Paste any text. LUMORA analyzes it and returns a Trust Score — telling you exactly how much of it was written by a machine.</p>
+  <!-- Tab Bar -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('detect')">// Detect AI</button>
+    <button class="tab-btn" onclick="switchTab('cert')">// Get Certificate</button>
   </div>
 
-  <div class="panel">
-    <div class="panel-label">// Input Text</div>
-    <textarea id="textInput" placeholder="Paste text here to verify — article, email, essay, message..."></textarea>
-    <div class="meta-row">
-      <span id="charCount">0 characters</span>
-      <button class="btn" id="analyzeBtn" onclick="analyze()" disabled>
-        <span>Analyze →</span>
-      </button>
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TAB 1: DETECT AI                           -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="tab-section active" id="tab-detect">
+
+    <div class="hero">
+      <h1>The <em>Trust Layer</em><br>for AI Content.</h1>
+      <p>Paste any text. LUMORA analyzes it and returns a Trust Score — telling you exactly how much of it was written by a machine.</p>
     </div>
-  </div>
 
-  <div id="loader">
-    <div class="dots">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
+    <div class="panel">
+      <div class="panel-label">// Input Text</div>
+      <textarea id="textInput" placeholder="Paste text here to verify — article, email, essay, message..."></textarea>
+      <div class="meta-row">
+        <span id="charCount">0 characters</span>
+        <button class="btn" id="analyzeBtn" onclick="analyze()" disabled>
+          <span>Analyze →</span>
+        </button>
+      </div>
     </div>
-    Scanning signals...
-  </div>
 
-  <div id="result">
-    <div class="result-panel">
-      <div class="panel-label">// Trust Score</div>
+    <div id="loader">
+      <div class="dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      Scanning signals...
+    </div>
 
-      <div class="score-section">
-        <div class="ring-wrap">
-          <svg width="130" height="130" viewBox="0 0 130 130">
-            <circle class="ring-bg" cx="65" cy="65" r="55"/>
-            <circle class="ring-fg" id="ringFg" cx="65" cy="65" r="55"/>
-          </svg>
-          <div class="ring-center">
-            <div class="ring-score" id="scoreNum">—</div>
-            <div class="ring-label">Trust</div>
+    <div id="result">
+      <div class="result-panel">
+        <div class="panel-label">// Trust Score</div>
+
+        <div class="score-section">
+          <div class="ring-wrap">
+            <svg width="130" height="130" viewBox="0 0 130 130">
+              <circle class="ring-bg" cx="65" cy="65" r="55"/>
+              <circle class="ring-fg" id="ringFg" cx="65" cy="65" r="55"/>
+            </svg>
+            <div class="ring-center">
+              <div class="ring-score" id="scoreNum">—</div>
+              <div class="ring-label">Trust</div>
+            </div>
+          </div>
+
+          <div class="verdict-block">
+            <div class="verdict-tag" id="verdictTag">—</div>
+            <div class="verdict-title" id="verdictTitle">—</div>
+            <div class="verdict-sub" id="verdictSub">—</div>
           </div>
         </div>
 
-        <div class="verdict-block">
-          <div class="verdict-tag" id="verdictTag">—</div>
-          <div class="verdict-title" id="verdictTitle">—</div>
-          <div class="verdict-sub" id="verdictSub">—</div>
+        <div class="divider"></div>
+        <div class="breakdown-label">// Signal Breakdown</div>
+        <ul class="signal-list" id="signalList"></ul>
+
+        <div class="actions">
+          <button class="btn-ghost" onclick="copyResult()">Copy Result</button>
+          <button class="btn-ghost" onclick="downloadResult()">Download Report</button>
+          <button class="btn-ghost btn-cert-shortcut" id="certShortcut" onclick="goToCert()" style="display:none; border-color: var(--green); color: var(--green);">Get Certificate →</button>
+          <button class="btn-ghost" onclick="reset()">Analyze Another</button>
         </div>
       </div>
+    </div>
 
-      <div class="divider"></div>
+  </div>
 
-      <div class="breakdown-label">// Signal Breakdown</div>
-      <ul class="signal-list" id="signalList"></ul>
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- TAB 2: GET CERTIFICATE                     -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="tab-section" id="tab-cert">
 
-      <div class="actions">
-        <button class="btn-ghost" onclick="copyResult()">Copy Result</button>
-        <button class="btn-ghost" onclick="downloadResult()">Download Report</button>
-        <button class="btn-ghost" onclick="reset()">Analyze Another</button>
+    <div class="hero">
+      <h1>Prove You're <em>Human.</em><br>Get Certified.</h1>
+      <p>Paste your writing. LUMORA verifies it's human-authored and issues a shareable certificate with a unique ID — your proof against AI accusations.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-label">// Author Details</div>
+
+      <div class="input-group">
+        <label class="input-label">Your Name</label>
+        <input type="text" id="authorName" placeholder="e.g. Seren Sharma" maxlength="80" />
+      </div>
+
+      <div class="input-group">
+        <label class="input-label">Document Title</label>
+        <input type="text" id="docTitle" placeholder="e.g. Marketing Report Q2 2026" maxlength="120" />
+      </div>
+
+      <div class="panel-label" style="margin-top: 8px;">// Your Writing</div>
+      <textarea id="certTextInput" placeholder="Paste your writing here — article, essay, report, email, proposal...&#10;&#10;Minimum 30 characters. The more text, the more accurate the certificate."></textarea>
+      <div class="meta-row">
+        <span id="certCharCount">0 characters</span>
+        <button class="btn btn-green" id="certBtn" onclick="generateCert()" disabled>
+          <span>Generate Certificate →</span>
+        </button>
       </div>
     </div>
+
+    <div id="certLoader">
+      <div class="dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      Verifying authorship...
+    </div>
+
+    <div id="certResult"></div>
+
   </div>
 
 </div>
 
 <footer class="wrap" style="padding-top:0; margin-top:0;">
-  <span>LUMORA © 2025 — AI Trust Infrastructure</span>
+  <span>LUMORA © 2026 — AI Trust Infrastructure</span>
   <a href="#">API Access →</a>
 </footer>
 
-<div class="toast" id="toast">Copied to clipboard.</div>
+<div class="toast" id="toast"></div>
 
 <script>
-// ── State ──
-const textarea = document.getElementById('textInput');
-const analyzeBtn = document.getElementById('analyzeBtn');
-const charCount = document.getElementById('charCount');
-let lastScore = null;
-let lastText = '';
+const API_BASE = 'https://aggnes99-lumora-backend.hf.space';
 
-// ── Char counter ──
+// ── State ──
+const textarea    = document.getElementById('textInput');
+const analyzeBtn  = document.getElementById('analyzeBtn');
+const charCount   = document.getElementById('charCount');
+const certTextarea = document.getElementById('certTextInput');
+const certBtn     = document.getElementById('certBtn');
+const certCharCount = document.getElementById('certCharCount');
+let lastScore = null;
+let lastText  = '';
+let lastCert  = null;
+
+// ── Tab switching ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  document.querySelector(`#tab-${tab}`).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ── Char counters ──
 textarea.addEventListener('input', () => {
   const len = textarea.value.length;
   charCount.textContent = `${len.toLocaleString()} character${len !== 1 ? 's' : ''}`;
   analyzeBtn.disabled = len < 30;
 });
 
-// ── Main analyze ──
+certTextarea.addEventListener('input', () => {
+  const len = certTextarea.value.length;
+  certCharCount.textContent = `${len.toLocaleString()} character${len !== 1 ? 's' : ''}`;
+  certBtn.disabled = len < 30;
+});
+
+// ── ANALYZE ──
 async function analyze() {
   const text = textarea.value.trim();
   if (text.length < 30) return;
   lastText = text;
 
-  // UI states
   document.getElementById('result').style.display = 'none';
-  const loader = document.getElementById('loader');
-  loader.style.display = 'flex';
+  document.getElementById('loader').style.display = 'flex';
   analyzeBtn.disabled = true;
 
-  // Simulate API delay (replace with real backend call later)
-const response = await fetch('https://web-production-7e70d.up.railway.app/analyze', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ text: text })
-});
-const score = await response.json();
-lastScore = score;
-  loader.style.display = 'none';
-  renderResult(score, text);
+  try {
+    const response = await fetch(`${API_BASE}/analyze`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const score = await response.json();
+    lastScore = score;
+    document.getElementById('loader').style.display = 'none';
+    renderResult(score, text);
+  } catch(e) {
+    document.getElementById('loader').style.display = 'none';
+    analyzeBtn.disabled = false;
+    showToast('Connection error. Check your backend.');
+  }
 }
 
-// ── Heuristic scorer (frontend placeholder — replace with Flask API) ──
-function computeScore(text) {
-  const words = text.split(/\s+/).filter(Boolean);
-  const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 4);
+// ── GENERATE CERTIFICATE ──
+async function generateCert() {
+  const text        = certTextarea.value.trim();
+  const authorName  = document.getElementById('authorName').value.trim() || 'Anonymous';
+  const docTitle    = document.getElementById('docTitle').value.trim() || 'Untitled Document';
 
-  // Signal 1: avg sentence length (AI tends toward 18-25 words)
-  const avgSentLen = words.length / Math.max(sentences.length, 1);
-  const sentScore = avgSentLen > 14 && avgSentLen < 28 ? 30 : 0;
+  if (text.length < 30) return;
 
-  // Signal 2: transition word density
-  const transitions = ['furthermore', 'additionally', 'moreover', 'however', 'consequently',
-    'nevertheless', 'therefore', 'in conclusion', 'in summary', 'it is important',
-    'it should be noted', 'as a result', 'on the other hand', 'notably', 'significantly'];
-  const lc = text.toLowerCase();
-  const transCount = transitions.filter(t => lc.includes(t)).length;
-  const transScore = Math.min(transCount * 8, 32);
+  document.getElementById('certResult').style.display = 'none';
+  document.getElementById('certLoader').style.display = 'flex';
+  certBtn.disabled = true;
 
-  // Signal 3: punctuation variety (humans use more em dashes, ellipses, etc.)
-  const humanPunct = (text.match(/[—–…''""\(\)]/g) || []).length;
-  const punctScore = humanPunct < 2 ? 20 : 0;
+  try {
+    const response = await fetch(`${API_BASE}/certificate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, author_name: authorName, document_title: docTitle })
+    });
 
-  // Signal 4: repetition (AI repeats structural patterns)
-  const paraStarters = sentences.map(s => s.trim().split(' ').slice(0,2).join(' ').toLowerCase());
-  const uniqueStarters = new Set(paraStarters).size;
-  const repScore = (uniqueStarters / Math.max(paraStarters.length, 1)) < 0.7 ? 15 : 0;
+    const data = await response.json();
+    document.getElementById('certLoader').style.display = 'none';
+    certBtn.disabled = false;
 
-  // Signal 5: vocabulary richness
-  const uniqueWords = new Set(words.map(w => w.toLowerCase().replace(/[^a-z]/g,'')));
-  const richness = uniqueWords.size / Math.max(words.length, 1);
-  const richScore = richness > 0.55 ? 0 : 10;
-
-  const aiScore = Math.min(sentScore + transScore + punctScore + repScore + richScore, 97);
-  const humanTrust = Math.max(100 - aiScore, 3);
-
-  return {
-    trust: humanTrust,
-    aiProb: aiScore,
-    signals: buildSignals(transCount, avgSentLen, humanPunct, richness, aiScore)
-  };
+    if (response.status === 422 || data.error) {
+      renderCertError(data);
+    } else {
+      lastCert = data;
+      renderCertificate(data);
+    }
+  } catch(e) {
+    document.getElementById('certLoader').style.display = 'none';
+    certBtn.disabled = false;
+    showToast('Connection error. Check your backend.');
+  }
 }
 
-function buildSignals(transCount, avgSentLen, humanPunct, richness, aiScore) {
-  const signals = [];
-
-  if (transCount >= 2) {
-    signals.push({
-      type: 'positive',
-      icon: '⚡',
-      title: 'High transition word density',
-      desc: `${transCount} AI-typical phrase${transCount > 1 ? 's' : ''} detected (furthermore, moreover, etc.)`
-    });
-  } else {
-    signals.push({
-      type: 'negative',
-      icon: '✓',
-      title: 'Low AI transition phrase usage',
-      desc: 'Writer avoids formulaic connectors — human-typical.'
-    });
-  }
-
-  if (avgSentLen > 14 && avgSentLen < 28) {
-    signals.push({
-      type: 'positive',
-      icon: '⚡',
-      title: 'Uniform sentence length',
-      desc: `~${Math.round(avgSentLen)} words/sentence — consistent with AI generation patterns.`
-    });
-  } else {
-    signals.push({
-      type: 'negative',
-      icon: '✓',
-      title: 'Variable sentence rhythm',
-      desc: `Sentence length varies — more human-like flow detected.`
-    });
-  }
-
-  if (humanPunct < 2) {
-    signals.push({
-      type: 'positive',
-      icon: '⚡',
-      title: 'Minimal punctuation variety',
-      desc: 'Lacks em dashes, ellipses, or informal marks typical of human writing.'
-    });
-  } else {
-    signals.push({
-      type: 'negative',
-      icon: '✓',
-      title: 'Rich punctuation variety',
-      desc: 'Contains stylistic punctuation — em dashes, quotes, informal markers.'
-    });
-  }
-
-  if (richness < 0.55) {
-    signals.push({
-      type: 'positive',
-      icon: '⚡',
-      title: 'Vocabulary repetition detected',
-      desc: `${Math.round(richness * 100)}% unique word ratio — below human average.`
-    });
-  } else {
-    signals.push({
-      type: 'negative',
-      icon: '✓',
-      title: 'Strong vocabulary diversity',
-      desc: `${Math.round(richness * 100)}% unique word ratio — consistent with authentic writing.`
-    });
-  }
-
-  return signals;
-}
-
-// ── Render ──
+// ── RENDER ANALYSIS RESULT ──
 function renderResult(score, text) {
   const el = document.getElementById('result');
   el.style.display = 'block';
 
-  // Ring
   const ring = document.getElementById('ringFg');
   const circumference = 345;
   const offset = circumference - (score.trust / 100) * circumference;
-
   let color = score.trust >= 60 ? 'var(--green)' : score.trust >= 35 ? 'var(--yellow)' : 'var(--red)';
   ring.style.stroke = color;
+  setTimeout(() => { ring.style.strokeDashoffset = offset; }, 50);
 
-  setTimeout(() => {
-    ring.style.strokeDashoffset = offset;
-  }, 50);
-
-  // Score number (count up)
   const scoreEl = document.getElementById('scoreNum');
   scoreEl.style.color = color;
   let n = 0;
-  const target = score.trust;
   const interval = setInterval(() => {
-    n = Math.min(n + 2, target);
+    n = Math.min(n + 2, score.trust);
     scoreEl.textContent = n;
-    if (n >= target) clearInterval(interval);
+    if (n >= score.trust) clearInterval(interval);
   }, 20);
 
-  // Verdict
-  const tag = document.getElementById('verdictTag');
+  const tag   = document.getElementById('verdictTag');
   const title = document.getElementById('verdictTitle');
-  const sub = document.getElementById('verdictSub');
+  const sub   = document.getElementById('verdictSub');
 
   if (score.trust >= 70) {
     tag.className = 'verdict-tag human';
     tag.textContent = 'Human Written';
     title.textContent = 'High Trust Content';
-    sub.textContent = `Strong signals of authentic human authorship. Low probability of AI generation (${score.ai_probability}%).`;
+    sub.textContent = `Strong signals of authentic human authorship. AI probability: ${score.ai_probability}%.`;
+    document.getElementById('certShortcut').style.display = 'inline-block';
   } else if (score.trust >= 40) {
     tag.className = 'verdict-tag mixed';
     tag.textContent = 'Mixed Signals';
     title.textContent = 'Uncertain Origin';
-    sub.textContent = `Content shows both AI and human signals. May be AI-assisted or human text edited by AI.`;
+    sub.textContent = `Content shows both AI and human signals. May be AI-assisted writing.`;
+    document.getElementById('certShortcut').style.display = 'none';
   } else {
     tag.className = 'verdict-tag ai';
     tag.textContent = 'AI Generated';
     title.textContent = 'Low Trust Score';
-    sub.textContent = `Strong indicators of machine generation detected. AI probability: ${score.ai_probability}%.`;
+    sub.textContent = `Strong indicators of machine generation. AI probability: ${score.ai_probability}%.`;
+    document.getElementById('certShortcut').style.display = 'none';
   }
 
-  // Signals
   const list = document.getElementById('signalList');
   list.innerHTML = score.signals.map(s => `
     <li class="signal-item ${s.type}">
@@ -789,7 +1024,188 @@ function renderResult(score, text) {
   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ── Actions ──
+// ── RENDER CERTIFICATE ──
+function renderCertificate(cert) {
+  const el = document.getElementById('certResult');
+  el.style.display = 'block';
+
+  const style = cert.writing_style;
+  const vocabPct = Math.min(style.vocab_richness, 100);
+  const sentPct  = Math.min((style.avg_sentence_length / 40) * 100, 100);
+  const punctPct = Math.min((style.punctuation_variety / 20) * 100, 100);
+
+  el.innerHTML = `
+    <div class="cert-card">
+      <div class="cert-header">
+        <div>
+          <div class="cert-logo">LUM<span>ORA</span>
+            <small>AI TRUST INFRASTRUCTURE</small>
+          </div>
+        </div>
+        <div class="cert-badge">Human Authored — Verified</div>
+      </div>
+
+      <div class="cert-body">
+        <div class="cert-title">Authorship Certificate</div>
+        <div class="cert-doc-name">${escHtml(cert.document_title)}</div>
+        <div class="cert-author">Authored by <strong>${escHtml(cert.author_name)}</strong> · ${cert.issued_date}</div>
+
+        <div class="cert-grid">
+          <div class="cert-stat">
+            <div class="cert-stat-label">Trust Score</div>
+            <div class="cert-stat-value green">${cert.trust_score}<span style="font-size:14px; opacity:0.5">/100</span></div>
+          </div>
+          <div class="cert-stat">
+            <div class="cert-stat-label">Human Probability</div>
+            <div class="cert-stat-value blue">${cert.human_probability}%</div>
+          </div>
+          <div class="cert-stat">
+            <div class="cert-stat-label">Word Count</div>
+            <div class="cert-stat-value text">${cert.word_count.toLocaleString()}</div>
+          </div>
+          <div class="cert-stat">
+            <div class="cert-stat-label">Verdict</div>
+            <div class="cert-stat-value green" style="font-size:13px; letter-spacing:0.06em;">${cert.verdict}</div>
+          </div>
+        </div>
+
+        <div class="breakdown-label">// Writing Style Fingerprint</div>
+        <div class="style-bars">
+          <div class="style-bar-row">
+            <div class="style-bar-label"><span>Vocabulary Richness</span><span>${style.vocab_richness}%</span></div>
+            <div class="style-bar-track"><div class="style-bar-fill" data-pct="${vocabPct}"></div></div>
+          </div>
+          <div class="style-bar-row">
+            <div class="style-bar-label"><span>Sentence Complexity</span><span>~${style.avg_sentence_length} words/sentence</span></div>
+            <div class="style-bar-track"><div class="style-bar-fill" data-pct="${sentPct}"></div></div>
+          </div>
+          <div class="style-bar-row">
+            <div class="style-bar-label"><span>Punctuation Variety</span><span>${style.punctuation_variety} marks</span></div>
+            <div class="style-bar-track"><div class="style-bar-fill" data-pct="${punctPct}"></div></div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="cert-meta">
+          <div class="cert-meta-row">
+            <span>Certificate ID</span>
+            <span class="cert-hash">${cert.certificate_id}</span>
+          </div>
+          <div class="cert-meta-row">
+            <span>Content Hash</span>
+            <span class="cert-hash">${cert.content_hash}</span>
+          </div>
+          <div class="cert-meta-row">
+            <span>Issued At</span>
+            <span>${cert.issued_at}</span>
+          </div>
+          <div class="cert-meta-row">
+            <span>Detection Model</span>
+            <span>${cert.model_used}</span>
+          </div>
+          <div class="cert-meta-row">
+            <span>Issuer</span>
+            <span>${cert.issuer}</span>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-green" onclick="copyCert()"><span>Copy Certificate</span></button>
+          <button class="btn-ghost" onclick="downloadCert()">Download PDF Report</button>
+          <button class="btn-ghost" onclick="resetCert()">New Certificate</button>
+        </div>
+      </div>
+
+      <div class="cert-footer">
+        <div class="cert-footer-text">
+          This certificate confirms the analyzed content shows strong signals of human authorship.<br>
+          Verify this certificate at <strong style="color:var(--blue)">lumora.vercel.app</strong>
+        </div>
+        <div class="cert-id">${cert.certificate_id}</div>
+      </div>
+    </div>
+  `;
+
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Animate bars after render
+  setTimeout(() => {
+    el.querySelectorAll('.style-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.pct + '%';
+    });
+  }, 200);
+}
+
+// ── RENDER CERT ERROR ──
+function renderCertError(data) {
+  const el = document.getElementById('certResult');
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div class="cert-error">
+      <div class="cert-error-title">⚠ Certificate Cannot Be Issued</div>
+      <div class="cert-error-msg">
+        ${data.reason || data.error}<br><br>
+        Trust Score: <strong style="color:var(--yellow)">${data.trust_score || '—'}/100</strong> · 
+        AI Probability: <strong style="color:var(--red)">${data.ai_probability || '—'}%</strong><br><br>
+        LUMORA only issues certificates for content with a Trust Score of 60 or above. 
+        Please verify your content is primarily human-written.
+      </div>
+    </div>
+  `;
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── COPY / DOWNLOAD ──
+function copyResult() {
+  if (!lastScore) return;
+  const verdict = lastScore.trust >= 70 ? 'Human Written' : lastScore.trust >= 40 ? 'Mixed Signals' : 'AI Generated';
+  const text = `LUMORA Trust Score: ${lastScore.trust}/100\nVerdict: ${verdict}\nAI Probability: ${lastScore.ai_probability}%\n\nVerified by LUMORA — lumora.vercel.app`;
+  navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard.'));
+}
+
+function copyCert() {
+  if (!lastCert) return;
+  const text = `LUMORA AUTHORSHIP CERTIFICATE\n${'─'.repeat(40)}\nCertificate ID: ${lastCert.certificate_id}\nDocument: ${lastCert.document_title}\nAuthor: ${lastCert.author_name}\nTrust Score: ${lastCert.trust_score}/100\nHuman Probability: ${lastCert.human_probability}%\nVerdict: ${lastCert.verdict}\nIssued: ${lastCert.issued_at}\nContent Hash: ${lastCert.content_hash}\n${'─'.repeat(40)}\nVerified by LUMORA — lumora.vercel.app`;
+  navigator.clipboard.writeText(text).then(() => showToast('Certificate copied!'));
+}
+
+function downloadResult() {
+  if (!lastScore) return;
+  const verdict = lastScore.trust >= 70 ? 'Human Written' : lastScore.trust >= 40 ? 'Mixed Signals' : 'AI Generated';
+  const content = `LUMORA VERIFICATION REPORT\n${'='.repeat(40)}\nTrust Score: ${lastScore.trust}/100\nAI Probability: ${lastScore.ai_probability}%\nVerdict: ${verdict}\n\nSignal Breakdown:\n${lastScore.signals.map(s => `- ${s.title}: ${s.desc}`).join('\n')}\n\nAnalyzed Text (first 300 chars):\n${lastText.substring(0,300)}...\n\n${'='.repeat(40)}\nVerified by LUMORA — lumora.vercel.app`;
+  downloadText(content, `lumora-report-${Date.now()}.txt`);
+}
+
+function downloadCert() {
+  if (!lastCert) return;
+  const style = lastCert.writing_style;
+  const content = `LUMORA AUTHORSHIP CERTIFICATE\n${'='.repeat(50)}\n\nCertificate ID : ${lastCert.certificate_id}\nStatus         : ${lastCert.status}\nVerdict        : ${lastCert.verdict}\n\nDocument Title : ${lastCert.document_title}\nAuthor         : ${lastCert.author_name}\nIssued At      : ${lastCert.issued_at}\n\n${'─'.repeat(50)}\nSCORES\n${'─'.repeat(50)}\nTrust Score    : ${lastCert.trust_score}/100\nHuman Prob.    : ${lastCert.human_probability}%\nAI Probability : ${lastCert.ai_probability}%\n\n${'─'.repeat(50)}\nWRITING STYLE FINGERPRINT\n${'─'.repeat(50)}\nWord Count          : ${style.word_count}\nSentence Count      : ${style.sentence_count}\nVocab Richness      : ${style.vocab_richness}%\nAvg Sentence Length : ${style.avg_sentence_length} words\nPunctuation Variety : ${style.punctuation_variety} marks\nAvg Word Length     : ${style.avg_word_length} chars\n\n${'─'.repeat(50)}\nVERIFICATION\n${'─'.repeat(50)}\nContent Hash   : ${lastCert.content_hash}\nDetection Model: ${lastCert.model_used}\nIssuer         : ${lastCert.issuer}\n\n${'='.repeat(50)}\nVerify this certificate at: ${lastCert.verify_url}\n${'='.repeat(50)}`;
+  downloadText(content, `lumora-certificate-${lastCert.certificate_id}.txt`);
+}
+
+function downloadText(content, filename) {
+  const blob = new Blob([content], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  a.click();
+}
+
+function goToCert() {
+  if (lastText) {
+    certTextarea.value = lastText;
+    const len = lastText.length;
+    certCharCount.textContent = `${len.toLocaleString()} characters`;
+    certBtn.disabled = len < 30;
+  }
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-cert').classList.add('active');
+  document.querySelectorAll('.tab-btn')[1].classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function reset() {
   document.getElementById('result').style.display = 'none';
   textarea.value = '';
@@ -799,20 +1215,18 @@ function reset() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function copyResult() {
-  if (!lastScore) return;
-  const text = `LUMORA Trust Score: ${lastScore.trust}/100\nVerdict: ${lastScore.trust >= 70 ? 'Human Written' : lastScore.trust >= 40 ? 'Mixed Signals' : 'AI Generated'}\nAI Probability: ${lastscore.ai_probability}%\n\nAnalyzed by LUMORA — lumora.ai`;
-  navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard.'));
+function resetCert() {
+  document.getElementById('certResult').style.display = 'none';
+  certTextarea.value = '';
+  document.getElementById('authorName').value = '';
+  document.getElementById('docTitle').value = '';
+  certCharCount.textContent = '0 characters';
+  certBtn.disabled = true;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function downloadResult() {
-  if (!lastScore) return;
-  const content = `LUMORA VERIFICATION REPORT\n${'='.repeat(40)}\n\nTrust Score: ${lastScore.trust}/100\nAI Probability: ${lastscore.ai_probability}%\nVerdict: ${lastScore.trust >= 70 ? 'Human Written' : lastScore.trust >= 40 ? 'Mixed Signals' : 'AI Generated'}\n\nSignal Breakdown:\n${lastScore.signals.map(s => `- ${s.title}: ${s.desc}`).join('\n')}\n\nAnalyzed Text (first 300 chars):\n${lastText.substring(0,300)}...\n\n${'='.repeat(40)}\nVerified by LUMORA — Trust Layer for AI Content\nlumora.ai`;
-  const blob = new Blob([content], { type: 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `lumora-report-${Date.now()}.txt`;
-  a.click();
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function showToast(msg) {
