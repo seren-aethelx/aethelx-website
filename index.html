@@ -1,1240 +1,344 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>LUMORA — AI Content Verification</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>LUMORA — AI Trust Infrastructure</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --black: #060608;
-    --deep: #0a0a10;
-    --panel: #0f0f1a;
-    --border: #1a1a2e;
-    --blue: #0ff;
-    --blue-dim: rgba(0,255,255,0.08);
-    --blue-mid: rgba(0,255,255,0.18);
-    --text: #e8e8f0;
-    --muted: #5a5a78;
-    --green: #00ff9d;
-    --red: #ff3c5f;
-    --yellow: #ffe14d;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background: var(--black);
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 48px 48px;
-    opacity: 0.4;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  body::after {
-    content: '';
-    position: fixed;
-    top: -200px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 800px;
-    height: 500px;
-    background: radial-gradient(ellipse, rgba(0,255,255,0.06) 0%, transparent 70%);
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .wrap {
-    position: relative;
-    z-index: 1;
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 0 24px 80px;
-  }
-
-  /* ── NAV ── */
-  nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 28px 0 48px;
-  }
-
-  .logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 22px;
-    letter-spacing: 0.12em;
-    color: var(--blue);
-    text-shadow: 0 0 24px rgba(0,255,255,0.5);
-  }
-
-  .logo span { color: var(--text); }
-
-  .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .tag {
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    padding: 4px 10px;
-    text-transform: uppercase;
-  }
-
-  /* ── TAB SWITCHER ── */
-  .tab-bar {
-    display: flex;
-    gap: 0;
-    margin-bottom: 32px;
-    border: 1px solid var(--border);
-    width: fit-content;
-  }
-
-  .tab-btn {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    padding: 10px 24px;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    cursor: pointer;
-    transition: all 0.2s;
-    border-right: 1px solid var(--border);
-  }
-
-  .tab-btn:last-child { border-right: none; }
-
-  .tab-btn.active {
-    background: var(--blue-dim);
-    color: var(--blue);
-  }
-
-  .tab-btn:hover:not(.active) {
-    color: var(--text);
-    background: rgba(255,255,255,0.02);
-  }
-
-  /* ── HERO ── */
-  .hero { margin-bottom: 40px; }
-
-  .hero h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(32px, 6vw, 56px);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    margin-bottom: 16px;
-  }
-
-  .hero h1 em {
-    font-style: normal;
-    color: var(--blue);
-    text-shadow: 0 0 32px rgba(0,255,255,0.4);
-  }
-
-  .hero p {
-    color: var(--muted);
-    font-size: 13px;
-    letter-spacing: 0.04em;
-    line-height: 1.7;
-    max-width: 480px;
-  }
-
-  /* ── PANEL ── */
-  .panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    padding: 32px;
-    margin-bottom: 32px;
-    position: relative;
-  }
-
-  .panel::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--blue), transparent);
-    opacity: 0.6;
-  }
-
-  .panel-label {
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--blue);
-    text-transform: uppercase;
-    margin-bottom: 14px;
-  }
-
-  textarea {
-    width: 100%;
-    min-height: 200px;
-    background: var(--deep);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    line-height: 1.8;
-    padding: 16px;
-    resize: vertical;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  textarea::placeholder { color: var(--muted); }
-  textarea:focus { border-color: rgba(0,255,255,0.3); }
-
-  input[type="text"] {
-    width: 100%;
-    background: var(--deep);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    padding: 12px 16px;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 12px;
-  }
-
-  input[type="text"]::placeholder { color: var(--muted); }
-  input[type="text"]:focus { border-color: rgba(0,255,255,0.3); }
-
-  .input-label {
-    font-size: 10px;
-    letter-spacing: 0.14em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  .input-group { margin-bottom: 16px; }
-
-  .meta-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 12px;
-  }
-
-  #charCount, #certCharCount { font-size: 11px; color: var(--muted); }
-
-  /* ── BUTTONS ── */
-  .btn {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    background: transparent;
-    border: 1px solid var(--blue);
-    color: var(--blue);
-    padding: 12px 32px;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--blue);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.25s ease;
-    z-index: 0;
-  }
-
-  .btn:hover::before { transform: scaleX(1); }
-  .btn:hover { color: var(--black); }
-  .btn span { position: relative; z-index: 1; }
-
-  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .btn:disabled::before { transform: scaleX(0) !important; }
-  .btn:disabled { color: var(--blue) !important; }
-
-  .btn-green {
-    border-color: var(--green);
-    color: var(--green);
-  }
-
-  .btn-green::before { background: var(--green); }
-  .btn-green:hover { color: var(--black); }
-
-  .btn-ghost {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
-
-  /* ── RESULT ── */
-  #result, #certResult {
-    display: none;
-    animation: fadeUp 0.4s ease forwards;
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .result-panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    padding: 36px 32px;
-    position: relative;
-  }
-
-  .result-panel::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--blue), transparent);
-    opacity: 0.6;
-  }
-
-  /* Score ring */
-  .score-section {
-    display: flex;
-    align-items: center;
-    gap: 36px;
-    margin-bottom: 36px;
-    flex-wrap: wrap;
-  }
-
-  .ring-wrap {
-    position: relative;
-    width: 130px;
-    height: 130px;
-    flex-shrink: 0;
-  }
-
-  .ring-wrap svg { transform: rotate(-90deg); }
-  .ring-bg { fill: none; stroke: var(--border); stroke-width: 8; }
-
-  .ring-fg {
-    fill: none;
-    stroke-width: 8;
-    stroke-linecap: round;
-    stroke-dasharray: 345;
-    stroke-dashoffset: 345;
-    transition: stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1), stroke 0.4s;
-  }
-
-  .ring-center {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .ring-score {
-    font-family: 'Syne', sans-serif;
-    font-size: 32px;
-    font-weight: 800;
-    line-height: 1;
-  }
-
-  .ring-label {
-    font-size: 9px;
-    letter-spacing: 0.16em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
-
-  .verdict-block { flex: 1; min-width: 200px; }
-
-  .verdict-tag {
-    display: inline-block;
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 4px 12px;
-    margin-bottom: 12px;
-    border: 1px solid;
-  }
-
-  .verdict-tag.ai   { border-color: var(--red); color: var(--red); }
-  .verdict-tag.human { border-color: var(--green); color: var(--green); }
-  .verdict-tag.mixed { border-color: var(--yellow); color: var(--yellow); }
-
-  .verdict-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 22px;
-    font-weight: 800;
-    margin-bottom: 8px;
-    line-height: 1.1;
-  }
-
-  .verdict-sub { font-size: 12px; color: var(--muted); line-height: 1.6; }
-
-  .breakdown-label {
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    color: var(--blue);
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-
-  .signal-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-
-  .signal-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    font-size: 12px;
-    line-height: 1.5;
-    padding: 12px 14px;
-    background: var(--deep);
-    border-left: 2px solid var(--border);
-    transition: border-color 0.2s;
-  }
-
-  .signal-item.positive { border-left-color: var(--red); }
-  .signal-item.negative { border-left-color: var(--green); }
-
-  .signal-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
-
-  .signal-text strong { display: block; color: var(--text); margin-bottom: 2px; font-weight: 500; }
-  .signal-text span { color: var(--muted); }
-
-  .actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
-
-  /* ── CERTIFICATE ── */
-  .cert-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cert-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--green), var(--blue), var(--green), transparent);
-  }
-
-  .cert-header {
-    padding: 28px 32px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-
-  .cert-logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 18px;
-    letter-spacing: 0.12em;
-    color: var(--blue);
-  }
-
-  .cert-logo span { color: var(--text); }
-  .cert-logo small {
-    display: block;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--muted);
-    margin-top: 2px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 400;
-  }
-
-  .cert-badge {
-    background: rgba(0,255,157,0.08);
-    border: 1px solid var(--green);
-    color: var(--green);
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    padding: 6px 16px;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .cert-badge::before {
-    content: '✓';
-    font-size: 13px;
-  }
-
-  .cert-body { padding: 28px 32px; }
-
-  .cert-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 6px;
-  }
-
-  .cert-doc-name {
-    font-family: 'Syne', sans-serif;
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-
-  .cert-author {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 28px;
-  }
-
-  .cert-author strong { color: var(--blue); }
-
-  .cert-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-    margin-bottom: 28px;
-  }
-
-  .cert-stat {
-    background: var(--deep);
-    border: 1px solid var(--border);
-    padding: 16px;
-  }
-
-  .cert-stat-label {
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .cert-stat-value {
-    font-family: 'Syne', sans-serif;
-    font-size: 22px;
-    font-weight: 800;
-  }
-
-  .cert-stat-value.green { color: var(--green); }
-  .cert-stat-value.blue { color: var(--blue); }
-  .cert-stat-value.text { font-size: 14px; color: var(--text); }
-
-  .cert-meta {
-    background: var(--deep);
-    border: 1px solid var(--border);
-    padding: 16px 20px;
-    margin-bottom: 24px;
-  }
-
-  .cert-meta-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 11px;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-
-  .cert-meta-row:last-child { border-bottom: none; }
-  .cert-meta-row span:first-child { color: var(--muted); letter-spacing: 0.1em; }
-  .cert-meta-row span:last-child { color: var(--text); font-family: 'IBM Plex Mono', monospace; }
-
-  .cert-hash {
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    word-break: break-all;
-    color: var(--blue);
-    opacity: 0.7;
-  }
-
-  .cert-footer {
-    padding: 16px 32px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .cert-footer-text {
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    line-height: 1.6;
-  }
-
-  .cert-id {
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--blue);
-    letter-spacing: 0.1em;
-  }
-
-  /* Error panel */
-  .cert-error {
-    background: rgba(255, 60, 95, 0.06);
-    border: 1px solid var(--red);
-    padding: 24px 28px;
-  }
-
-  .cert-error-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    color: var(--red);
-    font-size: 14px;
-    margin-bottom: 8px;
-    letter-spacing: 0.1em;
-  }
-
-  .cert-error-msg { font-size: 12px; color: var(--muted); line-height: 1.7; }
-
-  /* Loading */
-  #loader, #certLoader {
-    display: none;
-    align-items: center;
-    gap: 14px;
-    padding: 24px;
-    color: var(--muted);
-    font-size: 12px;
-    letter-spacing: 0.08em;
-  }
-
-  .dots { display: flex; gap: 5px; }
-
-  .dot {
-    width: 6px;
-    height: 6px;
-    background: var(--blue);
-    border-radius: 50%;
-    animation: pulse 1.2s ease-in-out infinite;
-  }
-
-  .dot:nth-child(2) { animation-delay: 0.2s; }
-  .dot:nth-child(3) { animation-delay: 0.4s; }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 0.2; transform: scale(0.8); }
-    50%       { opacity: 1; transform: scale(1); }
-  }
-
-  /* Divider */
-  .divider { height: 1px; background: var(--border); margin: 28px 0; }
-
-  /* Footer */
-  footer {
-    margin-top: 64px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  footer span { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
-  footer a { color: var(--blue); text-decoration: none; font-size: 11px; }
-
-  /* Toast */
-  .toast {
-    position: fixed;
-    bottom: 32px;
-    right: 32px;
-    background: var(--panel);
-    border: 1px solid var(--blue);
-    color: var(--blue);
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    padding: 12px 20px;
-    z-index: 100;
-    transform: translateY(80px);
-    opacity: 0;
-    transition: all 0.3s;
-  }
-
-  .toast.show { transform: translateY(0); opacity: 1; }
-
-  /* Tab sections */
-  .tab-section { display: none; }
-  .tab-section.active { display: block; }
-
-  /* Style fingerprint bars */
-  .style-bars { margin-top: 20px; }
-  .style-bar-row { margin-bottom: 12px; }
-  .style-bar-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    margin-bottom: 5px;
-    text-transform: uppercase;
-  }
-  .style-bar-track {
-    height: 4px;
-    background: var(--border);
-    position: relative;
-  }
-  .style-bar-fill {
-    height: 100%;
-    background: var(--blue);
-    transition: width 1s cubic-bezier(0.16,1,0.3,1);
-    width: 0%;
-  }
+:root{--void:#03030a;--deep:#070712;--surface:#0d0d1f;--panel:#111128;--edge:#1e1e3f;--edge2:#2a2a50;--cyan:#00e5ff;--cyan-dim:rgba(0,229,255,0.07);--cyan-mid:rgba(0,229,255,0.15);--cyan-glow:rgba(0,229,255,0.4);--green:#00ffb3;--green-dim:rgba(0,255,179,0.08);--red:#ff2d55;--yellow:#ffd60a;--white:#f0f0ff;--muted:#4a4a7a;--muted2:#6a6a9a;--fd:'Bebas Neue',sans-serif;--fb:'DM Sans',sans-serif;--fm:'JetBrains Mono',monospace;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--void);color:var(--white);font-family:var(--fb);min-height:100vh;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.025) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(80px);opacity:.1;}
+.orb1{width:600px;height:600px;background:var(--cyan);top:-200px;left:-100px;animation:of 12s ease-in-out infinite;}
+.orb2{width:400px;height:400px;background:var(--green);bottom:-100px;right:-100px;animation:of 16s ease-in-out infinite reverse;}
+@keyframes of{0%,100%{transform:translate(0,0);}50%{transform:translate(20px,-20px);}}
+.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 28px 100px;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:32px 0 0;margin-bottom:80px;}
+.nl{display:flex;align-items:center;gap:12px;}
+.lm{width:36px;height:36px;flex-shrink:0;}
+.lt{font-family:var(--fd);font-size:28px;letter-spacing:.08em;color:var(--white);line-height:1;}
+.lt span{color:var(--cyan);}
+.nr{display:flex;align-items:center;gap:16px;}
+.nb{font-family:var(--fm);font-size:9px;letter-spacing:.2em;color:var(--muted2);border:1px solid var(--edge);padding:5px 12px;text-transform:uppercase;background:var(--surface);}
+.ns{display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:10px;color:var(--green);letter-spacing:.1em;}
+.sd{width:6px;height:6px;background:var(--green);border-radius:50%;animation:bk 2s ease-in-out infinite;}
+@keyframes bk{0%,100%{opacity:1;}50%{opacity:.3;}}
+.hero{margin-bottom:72px;}
+.eyebrow{font-family:var(--fm);font-size:11px;letter-spacing:.3em;color:var(--cyan);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+.eyebrow::before{content:'';width:32px;height:1px;background:var(--cyan);opacity:.5;}
+.hero h1{font-family:var(--fd);font-size:clamp(52px,9vw,96px);line-height:.95;letter-spacing:.02em;margin-bottom:24px;}
+.hero h1 .hl{color:transparent;-webkit-text-stroke:1.5px var(--cyan);text-shadow:0 0 60px var(--cyan-glow);}
+.hero h1 .bl{display:block;}
+.hero-sub{font-size:16px;color:var(--muted2);line-height:1.7;max-width:520px;font-weight:300;margin-bottom:36px;}
+.hero-sub strong{color:var(--white);font-weight:500;}
+.stats{display:flex;gap:32px;flex-wrap:wrap;}
+.stat{display:flex;flex-direction:column;gap:4px;}
+.sn{font-family:var(--fd);font-size:32px;letter-spacing:.04em;color:var(--cyan);line-height:1;}
+.sl{font-family:var(--fm);font-size:9px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;}
+.fh{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px;}
+.stitle{font-family:var(--fm);font-size:10px;letter-spacing:.24em;color:var(--cyan);text-transform:uppercase;}
+.tbar{display:flex;background:var(--surface);border:1px solid var(--edge);padding:4px;gap:2px;}
+.tbtn{font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:8px 16px;border:none;background:transparent;color:var(--muted2);cursor:pointer;transition:all .2s;white-space:nowrap;}
+.tbtn.active{background:var(--cyan);color:var(--void);}
+.tbtn:hover:not(.active){color:var(--white);}
+.tsec{display:none;}.tsec.active{display:block;}
+.mc{background:var(--surface);border:1px solid var(--edge);position:relative;margin-bottom:16px;overflow:hidden;}
+.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,var(--cyan) 40%,var(--green) 100%);}
+.ch{padding:20px 28px;border-bottom:1px solid var(--edge);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.ct{font-family:var(--fm);font-size:10px;letter-spacing:.2em;color:var(--cyan);text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+.ct::before{content:'';width:6px;height:6px;background:var(--cyan);border-radius:50%;}
+.cb{padding:28px;}
+textarea{width:100%;min-height:160px;background:var(--deep);border:1px solid var(--edge);color:var(--white);font-family:var(--fm);font-size:13px;line-height:1.8;padding:16px 20px;resize:vertical;outline:none;transition:border-color .2s,box-shadow .2s;}
+textarea::placeholder{color:var(--muted);}
+textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,229,255,.06);}
+input[type="text"]{width:100%;background:var(--deep);border:1px solid var(--edge);color:var(--white);font-family:var(--fm);font-size:13px;padding:12px 16px;outline:none;transition:border-color .2s;}
+input[type="text"]::placeholder{color:var(--muted);}
+input[type="text"]:focus{border-color:var(--cyan);}
+.ir2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+@media(max-width:600px){.ir2{grid-template-columns:1fr;}}
+.ig{display:flex;flex-direction:column;gap:6px;}
+.il{font-family:var(--fm);font-size:9px;letter-spacing:.2em;color:var(--muted2);text-transform:uppercase;}
+.mr{display:flex;align-items:center;justify-content:space-between;margin-top:14px;flex-wrap:wrap;gap:12px;}
+.cc2{font-family:var(--fm);font-size:11px;color:var(--muted);}
+.bp{font-family:var(--fd);font-size:16px;letter-spacing:.1em;background:var(--cyan);border:none;color:var(--void);padding:12px 32px;cursor:pointer;transition:all .2s;}
+.bp:hover{box-shadow:0 0 24px var(--cyan-glow);}
+.bp:disabled{opacity:.3;cursor:not-allowed;}
+.bp:disabled:hover{box-shadow:none;}
+.bg{background:var(--green);color:var(--void);}
+.bg:hover{box-shadow:0 0 24px rgba(0,255,179,.4);}
+.bo2{background:#ff6b00;color:var(--void);}
+.bo2:hover{box-shadow:0 0 24px rgba(255,107,0,.4);}
+.bo{font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:transparent;border:1px solid var(--edge2);color:var(--muted2);padding:9px 18px;cursor:pointer;transition:all .2s;}
+.bo:hover{border-color:var(--cyan);color:var(--cyan);}
+.uz{border:2px dashed var(--edge2);background:var(--deep);padding:52px 24px;text-align:center;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.uz:hover,.uz.drag{border-color:#ff6b00;background:rgba(255,107,0,.04);}
+.uz input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.ui{font-size:44px;margin-bottom:16px;display:block;}
+.ut{font-family:var(--fd);font-size:22px;letter-spacing:.06em;color:var(--white);margin-bottom:8px;}
+.uh{font-family:var(--fm);font-size:11px;color:var(--muted2);letter-spacing:.08em;line-height:1.8;}
+.uh strong{color:#ff6b00;}
+.ipw{margin-top:16px;display:none;text-align:center;}
+.ipw img{max-width:100%;max-height:260px;border:1px solid var(--edge);}
+.in2{font-family:var(--fm);font-size:10px;color:var(--muted);margin-top:8px;letter-spacing:.06em;}
+.ld{display:none;align-items:center;gap:16px;padding:28px;font-family:var(--fm);font-size:12px;letter-spacing:.1em;color:var(--muted2);}
+.dots{display:flex;gap:6px;}
+.dot{width:7px;height:7px;background:var(--cyan);border-radius:50%;animation:dp 1.4s ease-in-out infinite;}
+.dot:nth-child(2){animation-delay:.2s;}.dot:nth-child(3){animation-delay:.4s;}
+.dot.or{background:#ff6b00;}
+@keyframes dp{0%,100%{opacity:.2;transform:scale(.7);}50%{opacity:1;transform:scale(1);}}
+.rw{display:none;animation:su .5s cubic-bezier(.16,1,.3,1);}
+@keyframes su{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.rc{background:var(--surface);border:1px solid var(--edge);position:relative;overflow:hidden;}
+.rc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.rc.hm::before{background:var(--green);}.rc.ai::before{background:var(--red);}.rc.mx::before{background:var(--yellow);}
+.sh{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;padding:32px 28px;border-bottom:1px solid var(--edge);}
+@media(max-width:500px){.sh{grid-template-columns:1fr;}}
+.srw{position:relative;width:110px;height:110px;flex-shrink:0;}
+.srw svg{transform:rotate(-90deg);}
+.rtrack{fill:none;stroke:var(--edge2);stroke-width:8;}
+.rfill{fill:none;stroke-width:8;stroke-linecap:round;stroke-dasharray:314;stroke-dashoffset:314;transition:stroke-dashoffset 1.4s cubic-bezier(.16,1,.3,1),stroke .3s;}
+.rcenter{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.rnum{font-family:var(--fd);font-size:34px;letter-spacing:.02em;line-height:1;}
+.rlbl{font-family:var(--fm);font-size:8px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-top:2px;}
+.vc{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;padding:5px 12px;margin-bottom:12px;border:1px solid;}
+.vc.hm{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+.vc.ai{border-color:var(--red);color:var(--red);background:rgba(255,45,85,.06);}
+.vc.mx{border-color:var(--yellow);color:var(--yellow);background:rgba(255,214,10,.06);}
+.vc.df{border-color:var(--red);color:var(--red);background:rgba(255,45,85,.06);}
+.vc.au{border-color:var(--green);color:var(--green);background:var(--green-dim);}
+.vtitle{font-family:var(--fd);font-size:28px;letter-spacing:.04em;margin-bottom:8px;line-height:1.1;}
+.vdesc{font-size:13px;color:var(--muted2);line-height:1.6;}
+.sw{padding:24px 28px;border-bottom:1px solid var(--edge);}
+.slbl{font-family:var(--fm);font-size:9px;letter-spacing:.24em;color:var(--cyan);text-transform:uppercase;margin-bottom:14px;}
+.sl2{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.si{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:var(--panel);border-left:2px solid var(--edge2);font-size:12px;line-height:1.5;}
+.si.p{border-left-color:var(--red);}.si.n{border-left-color:var(--green);}
+.six{font-size:14px;flex-shrink:0;}
+.sit strong{display:block;color:var(--white);font-size:12px;margin-bottom:2px;font-weight:500;}
+.sit span{color:var(--muted2);}
+.ra{padding:20px 28px;display:flex;gap:10px;flex-wrap:wrap;}
+.divider{height:1px;background:var(--edge);margin:24px 0;}
+.igs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+@media(max-width:500px){.igs{grid-template-columns:1fr 1fr;}}
+.isb{background:var(--panel);border:1px solid var(--edge);padding:20px 16px;text-align:center;}
+.isbl{font-family:var(--fm);font-size:8px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
+.isbv{font-family:var(--fd);font-size:40px;letter-spacing:.02em;line-height:1;}
+.isbv.r{color:var(--red);}.isbv.g{color:var(--green);}.isbv.o{color:#ff6b00;}
+.cbr{margin:20px 0;}
+.cbrl{display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
+.cbrt{height:4px;background:var(--edge2);}
+.cbrf{height:100%;transition:width 1.4s cubic-bezier(.16,1,.3,1);width:0;}
+.cbrf.r{background:linear-gradient(90deg,var(--green),var(--red));}.cbrf.g{background:linear-gradient(90deg,var(--red),var(--green));}
+.cercard{background:var(--surface);border:1px solid var(--edge);position:relative;overflow:hidden;}
+.cercard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--cyan),var(--green));}
+.certtop{padding:24px 28px 20px;border-bottom:1px solid var(--edge);display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;}
+.cbrand{font-family:var(--fd);font-size:20px;letter-spacing:.1em;color:var(--white);}
+.cbrand span{color:var(--cyan);}
+.cbrand small{display:block;font-family:var(--fm);font-size:8px;letter-spacing:.2em;color:var(--muted);font-weight:400;margin-top:3px;}
+.cvb{display:flex;align-items:center;gap:7px;background:var(--green-dim);border:1px solid var(--green);color:var(--green);font-family:var(--fm);font-size:9px;letter-spacing:.2em;text-transform:uppercase;padding:7px 14px;}
+.certbi{padding:24px 28px;}
+.cdoc{font-family:var(--fd);font-size:24px;letter-spacing:.04em;color:var(--white);margin-bottom:4px;}
+.cby{font-family:var(--fm);font-size:11px;color:var(--muted2);margin-bottom:24px;}
+.cby strong{color:var(--cyan);}
+.cscores{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:24px;}
+.csb{background:var(--panel);border:1px solid var(--edge);padding:16px;}
+.csbl{font-family:var(--fm);font-size:8px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
+.csbv{font-family:var(--fd);font-size:26px;letter-spacing:.04em;}
+.csbv.c{color:var(--cyan);}.csbv.g{color:var(--green);}.csbv.s{font-size:14px;color:var(--white);font-family:var(--fm);}
+.styw{margin-bottom:24px;}
+.sbr{margin-bottom:10px;}
+.sbt{display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--muted2);letter-spacing:.1em;margin-bottom:5px;text-transform:uppercase;}
+.sbtr{height:3px;background:var(--edge2);}
+.sbf{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));transition:width 1s cubic-bezier(.16,1,.3,1);width:0;}
+.cmt{background:var(--panel);border:1px solid var(--edge);margin-bottom:20px;}
+.cmr{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;border-bottom:1px solid var(--edge);font-family:var(--fm);font-size:10px;gap:12px;flex-wrap:wrap;}
+.cmr:last-child{border-bottom:none;}
+.cmr span:first-child{color:var(--muted2);letter-spacing:.1em;flex-shrink:0;}
+.cmr span:last-child{color:var(--white);word-break:break-all;text-align:right;}
+.ch2{color:var(--cyan)!important;opacity:.8;}
+.certbot{padding:14px 28px;border-top:1px solid var(--edge);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:var(--panel);}
+.cft{font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:.08em;line-height:1.7;}
+.cid{font-family:var(--fd);font-size:14px;letter-spacing:.1em;color:var(--cyan);}
+.cerr{background:rgba(255,45,85,.05);border:1px solid rgba(255,45,85,.3);padding:24px 28px;}
+.cerrt{font-family:var(--fd);font-size:20px;letter-spacing:.06em;color:var(--red);margin-bottom:10px;}
+.cerrb{font-size:13px;color:var(--muted2);line-height:1.7;}
+.trust-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:48px;}
+.ti{background:var(--surface);border:1px solid var(--edge);padding:20px;display:flex;gap:14px;align-items:flex-start;}
+.tico{font-size:22px;flex-shrink:0;}
+.titn{font-family:var(--fm);font-size:11px;font-weight:500;color:var(--white);margin-bottom:4px;letter-spacing:.06em;}
+.tidesc{font-size:11px;color:var(--muted2);line-height:1.6;}
+footer{position:relative;z-index:1;margin-top:80px;padding:32px 28px;border-top:1px solid var(--edge);max-width:1000px;margin-left:auto;margin-right:auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.fl{font-family:var(--fm);font-size:10px;color:var(--muted);letter-spacing:.1em;line-height:1.8;}
+.fr{display:flex;gap:16px;}
+.flink{font-family:var(--fm);font-size:10px;color:var(--muted2);letter-spacing:.1em;text-decoration:none;transition:color .2s;}
+.flink:hover{color:var(--cyan);}
+.toast{position:fixed;bottom:28px;right:28px;background:var(--panel);border:1px solid var(--cyan);color:var(--cyan);font-family:var(--fm);font-size:11px;letter-spacing:.08em;padding:12px 20px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.16,1,.3,1);}
+.toast.show{transform:translateY(0);opacity:1;}
 </style>
 </head>
 <body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
 <div class="wrap">
-
-  <nav>
-    <div class="logo">LUM<span>ORA</span></div>
-    <div class="nav-right">
-      <div class="tag">Beta v0.2</div>
-    </div>
-  </nav>
-
-  <!-- Tab Bar -->
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('detect')">// Detect AI</button>
-    <button class="tab-btn" onclick="switchTab('cert')">// Get Certificate</button>
+<nav>
+  <div class="nl">
+    <svg class="lm" viewBox="0 0 36 36" fill="none">
+      <polygon points="18,2 32,10 32,26 18,34 4,26 4,10" fill="none" stroke="#00e5ff" stroke-width="1.2" opacity=".3"/>
+      <polygon points="18,7 28,13 28,23 18,29 8,23 8,13" fill="none" stroke="#00e5ff" stroke-width="1" opacity=".6"/>
+      <path d="M13 11 L13 25 L23 25 L23 20 L18 20 L18 11 Z" fill="#00e5ff"/>
+      <circle cx="23" cy="13" r="2.5" fill="#00ffb3"/>
+    </svg>
+    <div class="lt">LUM<span>ORA</span></div>
   </div>
-
-  <!-- ═══════════════════════════════════════════ -->
-  <!-- TAB 1: DETECT AI                           -->
-  <!-- ═══════════════════════════════════════════ -->
-  <div class="tab-section active" id="tab-detect">
-
-    <div class="hero">
-      <h1>The <em>Trust Layer</em><br>for AI Content.</h1>
-      <p>Paste any text. LUMORA analyzes it and returns a Trust Score — telling you exactly how much of it was written by a machine.</p>
-    </div>
-
-    <div class="panel">
-      <div class="panel-label">// Input Text</div>
-      <textarea id="textInput" placeholder="Paste text here to verify — article, email, essay, message..."></textarea>
-      <div class="meta-row">
-        <span id="charCount">0 characters</span>
-        <button class="btn" id="analyzeBtn" onclick="analyze()" disabled>
-          <span>Analyze →</span>
-        </button>
-      </div>
-    </div>
-
-    <div id="loader">
-      <div class="dots">
-        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-      </div>
-      Scanning signals...
-    </div>
-
-    <div id="result">
-      <div class="result-panel">
-        <div class="panel-label">// Trust Score</div>
-
-        <div class="score-section">
-          <div class="ring-wrap">
-            <svg width="130" height="130" viewBox="0 0 130 130">
-              <circle class="ring-bg" cx="65" cy="65" r="55"/>
-              <circle class="ring-fg" id="ringFg" cx="65" cy="65" r="55"/>
-            </svg>
-            <div class="ring-center">
-              <div class="ring-score" id="scoreNum">—</div>
-              <div class="ring-label">Trust</div>
-            </div>
-          </div>
-
-          <div class="verdict-block">
-            <div class="verdict-tag" id="verdictTag">—</div>
-            <div class="verdict-title" id="verdictTitle">—</div>
-            <div class="verdict-sub" id="verdictSub">—</div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-        <div class="breakdown-label">// Signal Breakdown</div>
-        <ul class="signal-list" id="signalList"></ul>
-
-        <div class="actions">
-          <button class="btn-ghost" onclick="copyResult()">Copy Result</button>
-          <button class="btn-ghost" onclick="downloadResult()">Download Report</button>
-          <button class="btn-ghost btn-cert-shortcut" id="certShortcut" onclick="goToCert()" style="display:none; border-color: var(--green); color: var(--green);">Get Certificate →</button>
-          <button class="btn-ghost" onclick="reset()">Analyze Another</button>
-        </div>
-      </div>
-    </div>
-
+  <div class="nr">
+    <div class="ns"><div class="sd"></div>LIVE</div>
+    <div class="nb">Beta v0.3</div>
   </div>
+</nav>
 
-  <!-- ═══════════════════════════════════════════ -->
-  <!-- TAB 2: GET CERTIFICATE                     -->
-  <!-- ═══════════════════════════════════════════ -->
-  <div class="tab-section" id="tab-cert">
-
-    <div class="hero">
-      <h1>Prove You're <em>Human.</em><br>Get Certified.</h1>
-      <p>Paste your writing. LUMORA verifies it's human-authored and issues a shareable certificate with a unique ID — your proof against AI accusations.</p>
-    </div>
-
-    <div class="panel">
-      <div class="panel-label">// Author Details</div>
-
-      <div class="input-group">
-        <label class="input-label">Your Name</label>
-        <input type="text" id="authorName" placeholder="e.g. Seren Sharma" maxlength="80" />
-      </div>
-
-      <div class="input-group">
-        <label class="input-label">Document Title</label>
-        <input type="text" id="docTitle" placeholder="e.g. Marketing Report Q2 2026" maxlength="120" />
-      </div>
-
-      <div class="panel-label" style="margin-top: 8px;">// Your Writing</div>
-      <textarea id="certTextInput" placeholder="Paste your writing here — article, essay, report, email, proposal...&#10;&#10;Minimum 30 characters. The more text, the more accurate the certificate."></textarea>
-      <div class="meta-row">
-        <span id="certCharCount">0 characters</span>
-        <button class="btn btn-green" id="certBtn" onclick="generateCert()" disabled>
-          <span>Generate Certificate →</span>
-        </button>
-      </div>
-    </div>
-
-    <div id="certLoader">
-      <div class="dots">
-        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-      </div>
-      Verifying authorship...
-    </div>
-
-    <div id="certResult"></div>
-
+<div class="hero">
+  <div class="eyebrow">AI Trust Infrastructure</div>
+  <h1>
+    <span class="bl">THE WORLD</span>
+    <span class="bl">NEEDS <span class="hl">TRUTH.</span></span>
+  </h1>
+  <p class="hero-sub">AI is everywhere. <strong>Fakes are everywhere.</strong> LUMORA is the verification layer that separates real from artificial — for text, images, and human identity.</p>
+  <div class="stats">
+    <div class="stat"><div class="sn">3</div><div class="sl">AI Models</div></div>
+    <div class="stat"><div class="sn">99%</div><div class="sl">Accuracy</div></div>
+    <div class="stat"><div class="sn">0ms</div><div class="sl">Signup Needed</div></div>
+    <div class="stat"><div class="sn">∞</div><div class="sl">Possibilities</div></div>
   </div>
-
 </div>
 
-<footer class="wrap" style="padding-top:0; margin-top:0;">
-  <span>LUMORA © 2026 — AI Trust Infrastructure</span>
-  <a href="#">API Access →</a>
-</footer>
+<div class="fh">
+  <div class="stitle">// Choose Verification</div>
+  <div class="tbar">
+    <button class="tbtn active" onclick="swTab('detect',this)">Text AI</button>
+    <button class="tbtn" onclick="swTab('image',this)">Deepfake</button>
+    <button class="tbtn" onclick="swTab('cert',this)">Certificate</button>
+  </div>
+</div>
 
+<!-- TAB 1 -->
+<div class="tsec active" id="tab-detect">
+  <div class="mc">
+    <div class="ch"><div class="ct">Analyze Text</div><span style="font-family:var(--fm);font-size:10px;color:var(--muted2);">chatgpt-detector-roberta</span></div>
+    <div class="cb">
+      <textarea id="tIn" placeholder="Paste any text — article, email, essay, message...&#10;&#10;LUMORA will tell you if a machine wrote it."></textarea>
+      <div class="mr"><span class="cc2" id="cc">0 characters</span><button class="bp" id="aBtn" onclick="analyze()" disabled>ANALYZE →</button></div>
+    </div>
+  </div>
+  <div class="ld" id="ld"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>Scanning signals...</div>
+  <div class="rw" id="res">
+    <div class="rc" id="rc">
+      <div class="sh">
+        <div class="srw"><svg width="110" height="110" viewBox="0 0 110 110"><circle class="rtrack" cx="55" cy="55" r="50"/><circle class="rfill" id="rf" cx="55" cy="55" r="50"/></svg><div class="rcenter"><div class="rnum" id="rn">—</div><div class="rlbl">Trust</div></div></div>
+        <div><div class="vc" id="vch">—</div><div class="vtitle" id="vtitle">—</div><div class="vdesc" id="vdesc">—</div></div>
+      </div>
+      <div class="sw"><div class="slbl">Signal Breakdown</div><ul class="sl2" id="slist"></ul></div>
+      <div class="ra">
+        <button class="bo" onclick="cpRes()">Copy Result</button>
+        <button class="bo" onclick="dlRes()">Download</button>
+        <button class="bo" id="certSC" onclick="goToCert()" style="display:none;border-color:var(--green);color:var(--green);">Get Certificate →</button>
+        <button class="bo" onclick="rstText()">New Analysis</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2 -->
+<div class="tsec" id="tab-image">
+  <div class="mc">
+    <div class="ch"><div class="ct">Upload Image</div><span style="font-family:var(--fm);font-size:10px;color:var(--muted2);">deepfake_vs_real_image_detection</span></div>
+    <div class="cb">
+      <div class="uz" id="uz"><input type="file" id="imgIn" accept="image/*" onchange="hImg(event)"/><span class="ui">🔍</span><div class="ut">DROP IMAGE HERE</div><div class="uh">JPG · PNG · WEBP · Max <strong>5MB</strong><br>Profile photos · News images · Screenshots</div></div>
+      <div class="ipw" id="ipw"><img id="ip" src="" alt=""/><div class="in2" id="iname"></div></div>
+      <div class="mr" style="margin-top:16px;"><span class="cc2" id="iinfo">No file selected</span><button class="bp bo2" id="scBtn" onclick="scanImg()" disabled>SCAN IMAGE →</button></div>
+    </div>
+  </div>
+  <div class="ld" id="imgLd"><div class="dots"><div class="dot or"></div><div class="dot or"></div><div class="dot or"></div></div>Scanning for deepfake patterns...</div>
+  <div class="rw" id="imgRes"></div>
+</div>
+
+<!-- TAB 3 -->
+<div class="tsec" id="tab-cert">
+  <div class="mc">
+    <div class="ch"><div class="ct">Author Details</div><span style="font-family:var(--fm);font-size:10px;color:var(--muted2);">Human Verification Engine</span></div>
+    <div class="cb">
+      <div class="ir2">
+        <div class="ig"><label class="il">Your Name</label><input type="text" id="aname" placeholder="e.g. Seren Patil" maxlength="80"/></div>
+        <div class="ig"><label class="il">Document Title</label><input type="text" id="dtitle" placeholder="e.g. Q2 Marketing Report" maxlength="120"/></div>
+      </div>
+      <div class="il" style="margin-bottom:8px;">Your Writing</div>
+      <textarea id="cta" placeholder="Paste your writing here — article, essay, proposal, email...&#10;&#10;LUMORA will verify it's human-authored and issue a certificate."></textarea>
+      <div class="mr"><span class="cc2" id="ccc">0 characters</span><button class="bp bg" id="cBtn" onclick="genCert()" disabled>GENERATE CERTIFICATE →</button></div>
+    </div>
+  </div>
+  <div class="ld" id="cLd"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>Verifying authorship...</div>
+  <div class="rw" id="cRes"></div>
+</div>
+
+<div class="trust-row">
+  <div class="ti"><div class="tico">🔒</div><div><div class="titn">No Data Stored</div><div class="tidesc">Your content is analyzed and discarded. Nothing is saved.</div></div></div>
+  <div class="ti"><div class="tico">⚡</div><div><div class="titn">Instant Results</div><div class="tidesc">AI-powered analysis in seconds. No queues, no waiting.</div></div></div>
+  <div class="ti"><div class="tico">🌍</div><div><div class="titn">Global Standard</div><div class="tidesc">Built to become the world's verification infrastructure by 2032.</div></div></div>
+  <div class="ti"><div class="tico">🤖</div><div><div class="titn">Open AI Models</div><div class="tidesc">Powered by state-of-the-art open-source detection models.</div></div></div>
+</div>
+</div>
+
+<footer>
+  <div class="fl">LUMORA © 2026 — AI Trust Infrastructure<br>Built to solve the global truth crisis.</div>
+  <div class="fr"><a href="#" class="flink">API Access</a><a href="#" class="flink">Pricing</a><a href="#" class="flink">About</a></div>
+</footer>
 <div class="toast" id="toast"></div>
 
 <script>
-const API_BASE = 'https://aggnes99-lumora-backend.hf.space';
+const API='https://aggnes99-lumora-backend.hf.space';
+let lScore=null,lText='',lCert=null,imgF=null;
+const tIn=document.getElementById('tIn'),aBtn=document.getElementById('aBtn'),cc=document.getElementById('cc');
+const cta=document.getElementById('cta'),cBtn=document.getElementById('cBtn'),ccc=document.getElementById('ccc');
+const scBtn=document.getElementById('scBtn');
 
-// ── State ──
-const textarea    = document.getElementById('textInput');
-const analyzeBtn  = document.getElementById('analyzeBtn');
-const charCount   = document.getElementById('charCount');
-const certTextarea = document.getElementById('certTextInput');
-const certBtn     = document.getElementById('certBtn');
-const certCharCount = document.getElementById('certCharCount');
-let lastScore = null;
-let lastText  = '';
-let lastCert  = null;
+function swTab(id,btn){document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tsec').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 
-// ── Tab switching ──
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-  document.querySelector(`#tab-${tab}`).classList.add('active');
-  event.target.classList.add('active');
-}
+tIn.addEventListener('input',()=>{const l=tIn.value.length;cc.textContent=`${l.toLocaleString()} characters`;aBtn.disabled=l<30;});
+cta.addEventListener('input',()=>{const l=cta.value.length;ccc.textContent=`${l.toLocaleString()} characters`;cBtn.disabled=l<30;});
 
-// ── Char counters ──
-textarea.addEventListener('input', () => {
-  const len = textarea.value.length;
-  charCount.textContent = `${len.toLocaleString()} character${len !== 1 ? 's' : ''}`;
-  analyzeBtn.disabled = len < 30;
-});
+function hImg(e){const f=e.target.files[0];if(!f)return;if(f.size>5*1024*1024){toast('Max 5MB.');return;}imgF=f;document.getElementById('iinfo').textContent=`${f.name} · ${(f.size/1024).toFixed(1)} KB`;scBtn.disabled=false;const r=new FileReader();r.onload=ev=>{document.getElementById('ip').src=ev.target.result;document.getElementById('iname').textContent=f.name;document.getElementById('ipw').style.display='block';};r.readAsDataURL(f);document.getElementById('imgRes').style.display='none';}
 
-certTextarea.addEventListener('input', () => {
-  const len = certTextarea.value.length;
-  certCharCount.textContent = `${len.toLocaleString()} character${len !== 1 ? 's' : ''}`;
-  certBtn.disabled = len < 30;
-});
+const uz=document.getElementById('uz');
+uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('drag');});
+uz.addEventListener('dragleave',()=>uz.classList.remove('drag'));
+uz.addEventListener('drop',e=>{e.preventDefault();uz.classList.remove('drag');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/')){const dt=new DataTransfer();dt.items.add(f);document.getElementById('imgIn').files=dt.files;hImg({target:{files:[f]}});}});
 
-// ── ANALYZE ──
-async function analyze() {
-  const text = textarea.value.trim();
-  if (text.length < 30) return;
-  lastText = text;
+async function scanImg(){if(!imgF)return;document.getElementById('imgRes').style.display='none';document.getElementById('imgLd').style.display='flex';scBtn.disabled=true;const r=new FileReader();r.onload=async e=>{try{const res=await fetch(`${API}/analyze-image`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image_base64:e.target.result})});const d=await res.json();document.getElementById('imgLd').style.display='none';scBtn.disabled=false;rImg(d);}catch(err){document.getElementById('imgLd').style.display='none';scBtn.disabled=false;toast('Connection error.');}};r.readAsDataURL(imgF);}
 
-  document.getElementById('result').style.display = 'none';
-  document.getElementById('loader').style.display = 'flex';
-  analyzeBtn.disabled = true;
+async function analyze(){const text=tIn.value.trim();if(text.length<30)return;lText=text;document.getElementById('res').style.display='none';document.getElementById('ld').style.display='flex';aBtn.disabled=true;try{const res=await fetch(`${API}/analyze`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});const d=await res.json();lScore=d;document.getElementById('ld').style.display='none';rText(d);}catch(err){document.getElementById('ld').style.display='none';aBtn.disabled=false;toast('Connection error.');}}
 
-  try {
-    const response = await fetch(`${API_BASE}/analyze`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text })
-    });
-    const score = await response.json();
-    lastScore = score;
-    document.getElementById('loader').style.display = 'none';
-    renderResult(score, text);
-  } catch(e) {
-    document.getElementById('loader').style.display = 'none';
-    analyzeBtn.disabled = false;
-    showToast('Connection error. Check your backend.');
-  }
-}
+async function genCert(){const text=cta.value.trim();const name=document.getElementById('aname').value.trim()||'Anonymous';const title=document.getElementById('dtitle').value.trim()||'Untitled Document';if(text.length<30)return;document.getElementById('cRes').style.display='none';document.getElementById('cLd').style.display='flex';cBtn.disabled=true;try{const res=await fetch(`${API}/certificate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,author_name:name,document_title:title})});const d=await res.json();document.getElementById('cLd').style.display='none';cBtn.disabled=false;res.status===422||d.error?rCertErr(d):(lCert=d,rCert(d));}catch(err){document.getElementById('cLd').style.display='none';cBtn.disabled=false;toast('Connection error.');}}
 
-// ── GENERATE CERTIFICATE ──
-async function generateCert() {
-  const text        = certTextarea.value.trim();
-  const authorName  = document.getElementById('authorName').value.trim() || 'Anonymous';
-  const docTitle    = document.getElementById('docTitle').value.trim() || 'Untitled Document';
+function rText(s){const el=document.getElementById('res');el.style.display='block';const ring=document.getElementById('rf');const off=314-(s.trust/100)*314;const col=s.trust>=70?'var(--green)':s.trust>=40?'var(--yellow)':'var(--red)';ring.style.stroke=col;setTimeout(()=>{ring.style.strokeDashoffset=off;},50);const ne=document.getElementById('rn');ne.style.color=col;let n=0;const iv=setInterval(()=>{n=Math.min(n+2,s.trust);ne.textContent=n;if(n>=s.trust)clearInterval(iv);},18);const ch=document.getElementById('vch'),vt=document.getElementById('vtitle'),vd=document.getElementById('vdesc');const card=document.getElementById('rc');card.className='rc';if(s.trust>=70){card.classList.add('hm');ch.className='vc hm';ch.textContent='✓ Human Written';vt.textContent='High Trust Content';vd.textContent=`Strong signals of authentic human authorship. AI probability: ${s.ai_probability}%.`;document.getElementById('certSC').style.display='inline-flex';}else if(s.trust>=40){card.classList.add('mx');ch.className='vc mx';ch.textContent='⚡ Mixed Signals';vt.textContent='Uncertain Origin';vd.textContent='Content shows both AI and human patterns.';document.getElementById('certSC').style.display='none';}else{card.classList.add('ai');ch.className='vc ai';ch.textContent='⚠ AI Generated';vt.textContent='Low Trust Score';vd.textContent=`Strong AI indicators detected. AI probability: ${s.ai_probability}%.`;document.getElementById('certSC').style.display='none';}document.getElementById('slist').innerHTML=s.signals.map(sig=>`<li class="si ${sig.type==='positive'?'p':'n'}"><span class="six">${sig.icon}</span><div class="sit"><strong>${sig.title}</strong><span>${sig.desc}</span></div></li>`).join('');el.scrollIntoView({behavior:'smooth',block:'start'});}
 
-  if (text.length < 30) return;
+function rImg(d){const el=document.getElementById('imgRes');el.style.display='block';if(!d.success){el.innerHTML=`<div class="rc" style="padding:32px;text-align:center;"><div style="font-family:var(--fd);font-size:22px;color:var(--yellow);margin-bottom:10px;">MODEL WARMING UP</div><div style="font-family:var(--fm);font-size:12px;color:var(--muted2);margin-bottom:20px;">${d.error||'Wait 30s and try again.'}</div><button class="bp bo2" onclick="scanImg()">TRY AGAIN →</button></div>`;el.scrollIntoView({behavior:'smooth',block:'start'});return;}const fake=d.verdict==='DEEPFAKE';el.innerHTML=`<div class="rc ${fake?'ai':'hm'}"><div class="sh"><div style="grid-column:span 2;"><div class="vc ${fake?'df':'au'}">${fake?'⚠ Deepfake Detected':'✓ Authentic Image'}</div><div class="vtitle">${fake?'AI Manipulation Found':'Image Appears Real'}</div><div class="vdesc">${fake?`Deepfake probability: ${d.deepfake_probability}%. Confidence: ${d.confidence}%.`:`Real probability: ${d.real_probability}%. No deepfake patterns detected.`}</div></div></div><div class="sw"><div class="igs"><div class="isb"><div class="isbl">Deepfake %</div><div class="isbv ${d.deepfake_probability>50?'r':'g'}">${d.deepfake_probability}<span style="font-size:18px;opacity:.5">%</span></div></div><div class="isb"><div class="isbl">Real %</div><div class="isbv ${d.real_probability>50?'g':'r'}">${d.real_probability}<span style="font-size:18px;opacity:.5">%</span></div></div><div class="isb"><div class="isbl">Confidence</div><div class="isbv o">${d.confidence}<span style="font-size:18px;opacity:.5">%</span></div></div></div><div class="cbr"><div class="cbrl"><span>Real</span><span>Deepfake</span></div><div class="cbrt"><div class="cbrf ${fake?'r':'g'}" id="cb" data-p="${d.deepfake_probability}"></div></div></div><ul class="sl2"><li class="si ${fake?'p':'n'}"><span class="six">${fake?'⚠️':'✅'}</span><div class="sit"><strong>${fake?'Deepfake Artifacts Detected':'Natural Camera Patterns'}</strong><span>${fake?'GAN/diffusion artifacts found.':'Pixel patterns consistent with real camera.'}</span></div></li><li class="si n"><span class="six">🤖</span><div class="sit"><strong>deepfake_vs_real_image_detection</strong><span>Vision transformer trained on real vs AI-generated images.</span></div></li></ul></div><div class="ra"><button class="bo" onclick="navigator.clipboard.writeText('LUMORA Deepfake Scan\\nVerdict: ${d.verdict}\\nDeepfake: ${d.deepfake_probability}%\\nReal: ${d.real_probability}%\\nlumora.vercel.app').then(()=>toast('Copied!'))">Copy Result</button><button class="bo" onclick="document.getElementById('imgRes').style.display='none';document.getElementById('ipw').style.display='none';imgF=null;scBtn.disabled=true;document.getElementById('iinfo').textContent='No file selected';">Scan Another</button></div></div>`;el.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>{const b=document.getElementById('cb');if(b)b.style.width=b.dataset.p+'%';},200);}
 
-  document.getElementById('certResult').style.display = 'none';
-  document.getElementById('certLoader').style.display = 'flex';
-  certBtn.disabled = true;
+function rCert(c){const el=document.getElementById('cRes');el.style.display='block';const s=c.writing_style;el.innerHTML=`<div class="cercard"><div class="certtop"><div class="cbrand">LUM<span>ORA</span><small>AI TRUST INFRASTRUCTURE</small></div><div class="cvb">✓ Human Authored — Verified</div></div><div class="certbi"><div style="font-family:var(--fm);font-size:9px;letter-spacing:.2em;color:var(--muted2);text-transform:uppercase;margin-bottom:6px;">Authorship Certificate</div><div class="cdoc">${esc(c.document_title)}</div><div class="cby">Authored by <strong>${esc(c.author_name)}</strong> · ${c.issued_date}</div><div class="cscores"><div class="csb"><div class="csbl">Trust Score</div><div class="csbv c">${c.trust_score}<span style="font-size:14px;opacity:.4">/100</span></div></div><div class="csb"><div class="csbl">Human Probability</div><div class="csbv g">${c.human_probability}%</div></div><div class="csb"><div class="csbl">Word Count</div><div class="csbv s">${c.word_count}</div></div><div class="csb"><div class="csbl">Verdict</div><div class="csbv s" style="color:var(--green);font-size:11px;">${c.verdict}</div></div></div><div class="styw"><div class="slbl">Writing Style Fingerprint</div><div class="sbr"><div class="sbt"><span>Vocabulary Richness</span><span>${s.vocab_richness}%</span></div><div class="sbtr"><div class="sbf" data-p="${Math.min(s.vocab_richness,100)}"></div></div></div><div class="sbr"><div class="sbt"><span>Sentence Complexity</span><span>~${s.avg_sentence_length} words/sentence</span></div><div class="sbtr"><div class="sbf" data-p="${Math.min((s.avg_sentence_length/40)*100,100)}"></div></div></div><div class="sbr"><div class="sbt"><span>Punctuation Variety</span><span>${s.punctuation_variety} marks</span></div><div class="sbtr"><div class="sbf" data-p="${Math.min((s.punctuation_variety/20)*100,100)}"></div></div></div></div><div class="cmt"><div class="cmr"><span>Certificate ID</span><span class="ch2">${c.certificate_id}</span></div><div class="cmr"><span>Content Hash</span><span class="ch2">${c.content_hash}</span></div><div class="cmr"><span>Issued At</span><span>${c.issued_at}</span></div><div class="cmr"><span>Model</span><span>${c.model_used}</span></div><div class="cmr"><span>Issuer</span><span>${c.issuer}</span></div></div><div class="ra" style="padding:0;margin-bottom:0;"><button class="bp bg" onclick="cpCert()">COPY CERTIFICATE</button><button class="bo" onclick="dlCert()">Download</button><button class="bo" onclick="rstCert()">New Certificate</button></div></div><div class="certbot"><div class="cft">Verify at <strong style="color:var(--cyan)">lumora.vercel.app</strong></div><div class="cid">${c.certificate_id}</div></div></div>`;el.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>{el.querySelectorAll('.sbf').forEach(b=>b.style.width=b.dataset.p+'%');},200);}
 
-  try {
-    const response = await fetch(`${API_BASE}/certificate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text, author_name: authorName, document_title: docTitle })
-    });
+function rCertErr(d){const el=document.getElementById('cRes');el.style.display='block';el.innerHTML=`<div class="cerr"><div class="cerrt">⚠ CERTIFICATE DENIED</div><div class="cerrb">${d.reason||d.error}<br><br>Trust Score: <strong style="color:var(--yellow)">${d.trust_score||'—'}/100</strong> · AI Probability: <strong style="color:var(--red)">${d.ai_probability||'—'}%</strong><br><br>LUMORA only certifies content with Trust Score 60+.</div></div>`;el.scrollIntoView({behavior:'smooth',block:'start'});}
 
-    const data = await response.json();
-    document.getElementById('certLoader').style.display = 'none';
-    certBtn.disabled = false;
-
-    if (response.status === 422 || data.error) {
-      renderCertError(data);
-    } else {
-      lastCert = data;
-      renderCertificate(data);
-    }
-  } catch(e) {
-    document.getElementById('certLoader').style.display = 'none';
-    certBtn.disabled = false;
-    showToast('Connection error. Check your backend.');
-  }
-}
-
-// ── RENDER ANALYSIS RESULT ──
-function renderResult(score, text) {
-  const el = document.getElementById('result');
-  el.style.display = 'block';
-
-  const ring = document.getElementById('ringFg');
-  const circumference = 345;
-  const offset = circumference - (score.trust / 100) * circumference;
-  let color = score.trust >= 60 ? 'var(--green)' : score.trust >= 35 ? 'var(--yellow)' : 'var(--red)';
-  ring.style.stroke = color;
-  setTimeout(() => { ring.style.strokeDashoffset = offset; }, 50);
-
-  const scoreEl = document.getElementById('scoreNum');
-  scoreEl.style.color = color;
-  let n = 0;
-  const interval = setInterval(() => {
-    n = Math.min(n + 2, score.trust);
-    scoreEl.textContent = n;
-    if (n >= score.trust) clearInterval(interval);
-  }, 20);
-
-  const tag   = document.getElementById('verdictTag');
-  const title = document.getElementById('verdictTitle');
-  const sub   = document.getElementById('verdictSub');
-
-  if (score.trust >= 70) {
-    tag.className = 'verdict-tag human';
-    tag.textContent = 'Human Written';
-    title.textContent = 'High Trust Content';
-    sub.textContent = `Strong signals of authentic human authorship. AI probability: ${score.ai_probability}%.`;
-    document.getElementById('certShortcut').style.display = 'inline-block';
-  } else if (score.trust >= 40) {
-    tag.className = 'verdict-tag mixed';
-    tag.textContent = 'Mixed Signals';
-    title.textContent = 'Uncertain Origin';
-    sub.textContent = `Content shows both AI and human signals. May be AI-assisted writing.`;
-    document.getElementById('certShortcut').style.display = 'none';
-  } else {
-    tag.className = 'verdict-tag ai';
-    tag.textContent = 'AI Generated';
-    title.textContent = 'Low Trust Score';
-    sub.textContent = `Strong indicators of machine generation. AI probability: ${score.ai_probability}%.`;
-    document.getElementById('certShortcut').style.display = 'none';
-  }
-
-  const list = document.getElementById('signalList');
-  list.innerHTML = score.signals.map(s => `
-    <li class="signal-item ${s.type}">
-      <span class="signal-icon">${s.icon}</span>
-      <div class="signal-text">
-        <strong>${s.title}</strong>
-        <span>${s.desc}</span>
-      </div>
-    </li>
-  `).join('');
-
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// ── RENDER CERTIFICATE ──
-function renderCertificate(cert) {
-  const el = document.getElementById('certResult');
-  el.style.display = 'block';
-
-  const style = cert.writing_style;
-  const vocabPct = Math.min(style.vocab_richness, 100);
-  const sentPct  = Math.min((style.avg_sentence_length / 40) * 100, 100);
-  const punctPct = Math.min((style.punctuation_variety / 20) * 100, 100);
-
-  el.innerHTML = `
-    <div class="cert-card">
-      <div class="cert-header">
-        <div>
-          <div class="cert-logo">LUM<span>ORA</span>
-            <small>AI TRUST INFRASTRUCTURE</small>
-          </div>
-        </div>
-        <div class="cert-badge">Human Authored — Verified</div>
-      </div>
-
-      <div class="cert-body">
-        <div class="cert-title">Authorship Certificate</div>
-        <div class="cert-doc-name">${escHtml(cert.document_title)}</div>
-        <div class="cert-author">Authored by <strong>${escHtml(cert.author_name)}</strong> · ${cert.issued_date}</div>
-
-        <div class="cert-grid">
-          <div class="cert-stat">
-            <div class="cert-stat-label">Trust Score</div>
-            <div class="cert-stat-value green">${cert.trust_score}<span style="font-size:14px; opacity:0.5">/100</span></div>
-          </div>
-          <div class="cert-stat">
-            <div class="cert-stat-label">Human Probability</div>
-            <div class="cert-stat-value blue">${cert.human_probability}%</div>
-          </div>
-          <div class="cert-stat">
-            <div class="cert-stat-label">Word Count</div>
-            <div class="cert-stat-value text">${cert.word_count.toLocaleString()}</div>
-          </div>
-          <div class="cert-stat">
-            <div class="cert-stat-label">Verdict</div>
-            <div class="cert-stat-value green" style="font-size:13px; letter-spacing:0.06em;">${cert.verdict}</div>
-          </div>
-        </div>
-
-        <div class="breakdown-label">// Writing Style Fingerprint</div>
-        <div class="style-bars">
-          <div class="style-bar-row">
-            <div class="style-bar-label"><span>Vocabulary Richness</span><span>${style.vocab_richness}%</span></div>
-            <div class="style-bar-track"><div class="style-bar-fill" data-pct="${vocabPct}"></div></div>
-          </div>
-          <div class="style-bar-row">
-            <div class="style-bar-label"><span>Sentence Complexity</span><span>~${style.avg_sentence_length} words/sentence</span></div>
-            <div class="style-bar-track"><div class="style-bar-fill" data-pct="${sentPct}"></div></div>
-          </div>
-          <div class="style-bar-row">
-            <div class="style-bar-label"><span>Punctuation Variety</span><span>${style.punctuation_variety} marks</span></div>
-            <div class="style-bar-track"><div class="style-bar-fill" data-pct="${punctPct}"></div></div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="cert-meta">
-          <div class="cert-meta-row">
-            <span>Certificate ID</span>
-            <span class="cert-hash">${cert.certificate_id}</span>
-          </div>
-          <div class="cert-meta-row">
-            <span>Content Hash</span>
-            <span class="cert-hash">${cert.content_hash}</span>
-          </div>
-          <div class="cert-meta-row">
-            <span>Issued At</span>
-            <span>${cert.issued_at}</span>
-          </div>
-          <div class="cert-meta-row">
-            <span>Detection Model</span>
-            <span>${cert.model_used}</span>
-          </div>
-          <div class="cert-meta-row">
-            <span>Issuer</span>
-            <span>${cert.issuer}</span>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn btn-green" onclick="copyCert()"><span>Copy Certificate</span></button>
-          <button class="btn-ghost" onclick="downloadCert()">Download PDF Report</button>
-          <button class="btn-ghost" onclick="resetCert()">New Certificate</button>
-        </div>
-      </div>
-
-      <div class="cert-footer">
-        <div class="cert-footer-text">
-          This certificate confirms the analyzed content shows strong signals of human authorship.<br>
-          Verify this certificate at <strong style="color:var(--blue)">lumora.vercel.app</strong>
-        </div>
-        <div class="cert-id">${cert.certificate_id}</div>
-      </div>
-    </div>
-  `;
-
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  // Animate bars after render
-  setTimeout(() => {
-    el.querySelectorAll('.style-bar-fill').forEach(bar => {
-      bar.style.width = bar.dataset.pct + '%';
-    });
-  }, 200);
-}
-
-// ── RENDER CERT ERROR ──
-function renderCertError(data) {
-  const el = document.getElementById('certResult');
-  el.style.display = 'block';
-  el.innerHTML = `
-    <div class="cert-error">
-      <div class="cert-error-title">⚠ Certificate Cannot Be Issued</div>
-      <div class="cert-error-msg">
-        ${data.reason || data.error}<br><br>
-        Trust Score: <strong style="color:var(--yellow)">${data.trust_score || '—'}/100</strong> · 
-        AI Probability: <strong style="color:var(--red)">${data.ai_probability || '—'}%</strong><br><br>
-        LUMORA only issues certificates for content with a Trust Score of 60 or above. 
-        Please verify your content is primarily human-written.
-      </div>
-    </div>
-  `;
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// ── COPY / DOWNLOAD ──
-function copyResult() {
-  if (!lastScore) return;
-  const verdict = lastScore.trust >= 70 ? 'Human Written' : lastScore.trust >= 40 ? 'Mixed Signals' : 'AI Generated';
-  const text = `LUMORA Trust Score: ${lastScore.trust}/100\nVerdict: ${verdict}\nAI Probability: ${lastScore.ai_probability}%\n\nVerified by LUMORA — lumora.vercel.app`;
-  navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard.'));
-}
-
-function copyCert() {
-  if (!lastCert) return;
-  const text = `LUMORA AUTHORSHIP CERTIFICATE\n${'─'.repeat(40)}\nCertificate ID: ${lastCert.certificate_id}\nDocument: ${lastCert.document_title}\nAuthor: ${lastCert.author_name}\nTrust Score: ${lastCert.trust_score}/100\nHuman Probability: ${lastCert.human_probability}%\nVerdict: ${lastCert.verdict}\nIssued: ${lastCert.issued_at}\nContent Hash: ${lastCert.content_hash}\n${'─'.repeat(40)}\nVerified by LUMORA — lumora.vercel.app`;
-  navigator.clipboard.writeText(text).then(() => showToast('Certificate copied!'));
-}
-
-function downloadResult() {
-  if (!lastScore) return;
-  const verdict = lastScore.trust >= 70 ? 'Human Written' : lastScore.trust >= 40 ? 'Mixed Signals' : 'AI Generated';
-  const content = `LUMORA VERIFICATION REPORT\n${'='.repeat(40)}\nTrust Score: ${lastScore.trust}/100\nAI Probability: ${lastScore.ai_probability}%\nVerdict: ${verdict}\n\nSignal Breakdown:\n${lastScore.signals.map(s => `- ${s.title}: ${s.desc}`).join('\n')}\n\nAnalyzed Text (first 300 chars):\n${lastText.substring(0,300)}...\n\n${'='.repeat(40)}\nVerified by LUMORA — lumora.vercel.app`;
-  downloadText(content, `lumora-report-${Date.now()}.txt`);
-}
-
-function downloadCert() {
-  if (!lastCert) return;
-  const style = lastCert.writing_style;
-  const content = `LUMORA AUTHORSHIP CERTIFICATE\n${'='.repeat(50)}\n\nCertificate ID : ${lastCert.certificate_id}\nStatus         : ${lastCert.status}\nVerdict        : ${lastCert.verdict}\n\nDocument Title : ${lastCert.document_title}\nAuthor         : ${lastCert.author_name}\nIssued At      : ${lastCert.issued_at}\n\n${'─'.repeat(50)}\nSCORES\n${'─'.repeat(50)}\nTrust Score    : ${lastCert.trust_score}/100\nHuman Prob.    : ${lastCert.human_probability}%\nAI Probability : ${lastCert.ai_probability}%\n\n${'─'.repeat(50)}\nWRITING STYLE FINGERPRINT\n${'─'.repeat(50)}\nWord Count          : ${style.word_count}\nSentence Count      : ${style.sentence_count}\nVocab Richness      : ${style.vocab_richness}%\nAvg Sentence Length : ${style.avg_sentence_length} words\nPunctuation Variety : ${style.punctuation_variety} marks\nAvg Word Length     : ${style.avg_word_length} chars\n\n${'─'.repeat(50)}\nVERIFICATION\n${'─'.repeat(50)}\nContent Hash   : ${lastCert.content_hash}\nDetection Model: ${lastCert.model_used}\nIssuer         : ${lastCert.issuer}\n\n${'='.repeat(50)}\nVerify this certificate at: ${lastCert.verify_url}\n${'='.repeat(50)}`;
-  downloadText(content, `lumora-certificate-${lastCert.certificate_id}.txt`);
-}
-
-function downloadText(content, filename) {
-  const blob = new Blob([content], { type: 'text/plain' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  a.click();
-}
-
-function goToCert() {
-  if (lastText) {
-    certTextarea.value = lastText;
-    const len = lastText.length;
-    certCharCount.textContent = `${len.toLocaleString()} characters`;
-    certBtn.disabled = len < 30;
-  }
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
-  document.getElementById('tab-cert').classList.add('active');
-  document.querySelectorAll('.tab-btn')[1].classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function reset() {
-  document.getElementById('result').style.display = 'none';
-  textarea.value = '';
-  charCount.textContent = '0 characters';
-  analyzeBtn.disabled = true;
-  textarea.focus();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function resetCert() {
-  document.getElementById('certResult').style.display = 'none';
-  certTextarea.value = '';
-  document.getElementById('authorName').value = '';
-  document.getElementById('docTitle').value = '';
-  certCharCount.textContent = '0 characters';
-  certBtn.disabled = true;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function escHtml(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
+function cpRes(){if(!lScore)return;const v=lScore.trust>=70?'Human Written':lScore.trust>=40?'Mixed Signals':'AI Generated';navigator.clipboard.writeText(`LUMORA Trust Score: ${lScore.trust}/100\nVerdict: ${v}\nAI Probability: ${lScore.ai_probability}%\n\nlumora.vercel.app`).then(()=>toast('Copied!'));}
+function cpCert(){if(!lCert)return;navigator.clipboard.writeText(`LUMORA AUTHORSHIP CERTIFICATE\nID: ${lCert.certificate_id}\nDocument: ${lCert.document_title}\nAuthor: ${lCert.author_name}\nTrust: ${lCert.trust_score}/100\nVerdict: ${lCert.verdict}\nIssued: ${lCert.issued_at}\nlumora.vercel.app`).then(()=>toast('Certificate copied!'));}
+function dlRes(){if(!lScore)return;const v=lScore.trust>=70?'Human Written':lScore.trust>=40?'Mixed Signals':'AI Generated';dl(`LUMORA REPORT\n${'='.repeat(40)}\nTrust: ${lScore.trust}/100\nAI Prob: ${lScore.ai_probability}%\nVerdict: ${v}\n\nlumora.vercel.app`,`lumora-report-${Date.now()}.txt`);}
+function dlCert(){if(!lCert)return;dl(`LUMORA CERTIFICATE\nID: ${lCert.certificate_id}\nDoc: ${lCert.document_title}\nAuthor: ${lCert.author_name}\nIssued: ${lCert.issued_at}\nTrust: ${lCert.trust_score}/100\nVerdict: ${lCert.verdict}\nHash: ${lCert.content_hash}\nlumora.vercel.app`,`lumora-cert-${lCert.certificate_id}.txt`);}
+function dl(c,n){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/plain'}));a.download=n;a.click();}
+function goToCert(){if(lText){cta.value=lText;ccc.textContent=`${lText.length} characters`;cBtn.disabled=lText.length<30;}document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tsec').forEach(s=>s.classList.remove('active'));document.getElementById('tab-cert').classList.add('active');document.querySelectorAll('.tbtn')[2].classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function rstText(){document.getElementById('res').style.display='none';tIn.value='';cc.textContent='0 characters';aBtn.disabled=true;tIn.focus();window.scrollTo({top:0,behavior:'smooth'});}
+function rstCert(){document.getElementById('cRes').style.display='none';cta.value='';document.getElementById('aname').value='';document.getElementById('dtitle').value='';ccc.textContent='0 characters';cBtn.disabled=true;window.scrollTo({top:0,behavior:'smooth'});}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 </script>
 </body>
 </html>
