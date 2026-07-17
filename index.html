@@ -1,344 +1,1521 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>LUMORA — AI Trust Infrastructure</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
 <style>
-:root{--void:#03030a;--deep:#070712;--surface:#0d0d1f;--panel:#111128;--edge:#1e1e3f;--edge2:#2a2a50;--cyan:#00e5ff;--cyan-dim:rgba(0,229,255,0.07);--cyan-mid:rgba(0,229,255,0.15);--cyan-glow:rgba(0,229,255,0.4);--green:#00ffb3;--green-dim:rgba(0,255,179,0.08);--red:#ff2d55;--yellow:#ffd60a;--white:#f0f0ff;--muted:#4a4a7a;--muted2:#6a6a9a;--fd:'Bebas Neue',sans-serif;--fb:'DM Sans',sans-serif;--fm:'JetBrains Mono',monospace;}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{background:var(--void);color:var(--white);font-family:var(--fb);min-height:100vh;overflow-x:hidden;}
-body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,229,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,0.025) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:0;}
-.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(80px);opacity:.1;}
-.orb1{width:600px;height:600px;background:var(--cyan);top:-200px;left:-100px;animation:of 12s ease-in-out infinite;}
-.orb2{width:400px;height:400px;background:var(--green);bottom:-100px;right:-100px;animation:of 16s ease-in-out infinite reverse;}
-@keyframes of{0%,100%{transform:translate(0,0);}50%{transform:translate(20px,-20px);}}
-.wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 28px 100px;}
-nav{display:flex;align-items:center;justify-content:space-between;padding:32px 0 0;margin-bottom:80px;}
-.nl{display:flex;align-items:center;gap:12px;}
-.lm{width:36px;height:36px;flex-shrink:0;}
-.lt{font-family:var(--fd);font-size:28px;letter-spacing:.08em;color:var(--white);line-height:1;}
-.lt span{color:var(--cyan);}
-.nr{display:flex;align-items:center;gap:16px;}
-.nb{font-family:var(--fm);font-size:9px;letter-spacing:.2em;color:var(--muted2);border:1px solid var(--edge);padding:5px 12px;text-transform:uppercase;background:var(--surface);}
-.ns{display:flex;align-items:center;gap:6px;font-family:var(--fm);font-size:10px;color:var(--green);letter-spacing:.1em;}
-.sd{width:6px;height:6px;background:var(--green);border-radius:50%;animation:bk 2s ease-in-out infinite;}
-@keyframes bk{0%,100%{opacity:1;}50%{opacity:.3;}}
-.hero{margin-bottom:72px;}
-.eyebrow{font-family:var(--fm);font-size:11px;letter-spacing:.3em;color:var(--cyan);text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
-.eyebrow::before{content:'';width:32px;height:1px;background:var(--cyan);opacity:.5;}
-.hero h1{font-family:var(--fd);font-size:clamp(52px,9vw,96px);line-height:.95;letter-spacing:.02em;margin-bottom:24px;}
-.hero h1 .hl{color:transparent;-webkit-text-stroke:1.5px var(--cyan);text-shadow:0 0 60px var(--cyan-glow);}
-.hero h1 .bl{display:block;}
-.hero-sub{font-size:16px;color:var(--muted2);line-height:1.7;max-width:520px;font-weight:300;margin-bottom:36px;}
-.hero-sub strong{color:var(--white);font-weight:500;}
-.stats{display:flex;gap:32px;flex-wrap:wrap;}
-.stat{display:flex;flex-direction:column;gap:4px;}
-.sn{font-family:var(--fd);font-size:32px;letter-spacing:.04em;color:var(--cyan);line-height:1;}
-.sl{font-family:var(--fm);font-size:9px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;}
-.fh{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px;}
-.stitle{font-family:var(--fm);font-size:10px;letter-spacing:.24em;color:var(--cyan);text-transform:uppercase;}
-.tbar{display:flex;background:var(--surface);border:1px solid var(--edge);padding:4px;gap:2px;}
-.tbtn{font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:8px 16px;border:none;background:transparent;color:var(--muted2);cursor:pointer;transition:all .2s;white-space:nowrap;}
-.tbtn.active{background:var(--cyan);color:var(--void);}
-.tbtn:hover:not(.active){color:var(--white);}
-.tsec{display:none;}.tsec.active{display:block;}
-.mc{background:var(--surface);border:1px solid var(--edge);position:relative;margin-bottom:16px;overflow:hidden;}
-.mc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent 0%,var(--cyan) 40%,var(--green) 100%);}
-.ch{padding:20px 28px;border-bottom:1px solid var(--edge);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-.ct{font-family:var(--fm);font-size:10px;letter-spacing:.2em;color:var(--cyan);text-transform:uppercase;display:flex;align-items:center;gap:8px;}
-.ct::before{content:'';width:6px;height:6px;background:var(--cyan);border-radius:50%;}
-.cb{padding:28px;}
-textarea{width:100%;min-height:160px;background:var(--deep);border:1px solid var(--edge);color:var(--white);font-family:var(--fm);font-size:13px;line-height:1.8;padding:16px 20px;resize:vertical;outline:none;transition:border-color .2s,box-shadow .2s;}
-textarea::placeholder{color:var(--muted);}
-textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,229,255,.06);}
-input[type="text"]{width:100%;background:var(--deep);border:1px solid var(--edge);color:var(--white);font-family:var(--fm);font-size:13px;padding:12px 16px;outline:none;transition:border-color .2s;}
-input[type="text"]::placeholder{color:var(--muted);}
-input[type="text"]:focus{border-color:var(--cyan);}
-.ir2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
-@media(max-width:600px){.ir2{grid-template-columns:1fr;}}
-.ig{display:flex;flex-direction:column;gap:6px;}
-.il{font-family:var(--fm);font-size:9px;letter-spacing:.2em;color:var(--muted2);text-transform:uppercase;}
-.mr{display:flex;align-items:center;justify-content:space-between;margin-top:14px;flex-wrap:wrap;gap:12px;}
-.cc2{font-family:var(--fm);font-size:11px;color:var(--muted);}
-.bp{font-family:var(--fd);font-size:16px;letter-spacing:.1em;background:var(--cyan);border:none;color:var(--void);padding:12px 32px;cursor:pointer;transition:all .2s;}
-.bp:hover{box-shadow:0 0 24px var(--cyan-glow);}
-.bp:disabled{opacity:.3;cursor:not-allowed;}
-.bp:disabled:hover{box-shadow:none;}
-.bg{background:var(--green);color:var(--void);}
-.bg:hover{box-shadow:0 0 24px rgba(0,255,179,.4);}
-.bo2{background:#ff6b00;color:var(--void);}
-.bo2:hover{box-shadow:0 0 24px rgba(255,107,0,.4);}
-.bo{font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;background:transparent;border:1px solid var(--edge2);color:var(--muted2);padding:9px 18px;cursor:pointer;transition:all .2s;}
-.bo:hover{border-color:var(--cyan);color:var(--cyan);}
-.uz{border:2px dashed var(--edge2);background:var(--deep);padding:52px 24px;text-align:center;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
-.uz:hover,.uz.drag{border-color:#ff6b00;background:rgba(255,107,0,.04);}
-.uz input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.ui{font-size:44px;margin-bottom:16px;display:block;}
-.ut{font-family:var(--fd);font-size:22px;letter-spacing:.06em;color:var(--white);margin-bottom:8px;}
-.uh{font-family:var(--fm);font-size:11px;color:var(--muted2);letter-spacing:.08em;line-height:1.8;}
-.uh strong{color:#ff6b00;}
-.ipw{margin-top:16px;display:none;text-align:center;}
-.ipw img{max-width:100%;max-height:260px;border:1px solid var(--edge);}
-.in2{font-family:var(--fm);font-size:10px;color:var(--muted);margin-top:8px;letter-spacing:.06em;}
-.ld{display:none;align-items:center;gap:16px;padding:28px;font-family:var(--fm);font-size:12px;letter-spacing:.1em;color:var(--muted2);}
-.dots{display:flex;gap:6px;}
-.dot{width:7px;height:7px;background:var(--cyan);border-radius:50%;animation:dp 1.4s ease-in-out infinite;}
-.dot:nth-child(2){animation-delay:.2s;}.dot:nth-child(3){animation-delay:.4s;}
-.dot.or{background:#ff6b00;}
-@keyframes dp{0%,100%{opacity:.2;transform:scale(.7);}50%{opacity:1;transform:scale(1);}}
-.rw{display:none;animation:su .5s cubic-bezier(.16,1,.3,1);}
-@keyframes su{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-.rc{background:var(--surface);border:1px solid var(--edge);position:relative;overflow:hidden;}
-.rc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
-.rc.hm::before{background:var(--green);}.rc.ai::before{background:var(--red);}.rc.mx::before{background:var(--yellow);}
-.sh{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;padding:32px 28px;border-bottom:1px solid var(--edge);}
-@media(max-width:500px){.sh{grid-template-columns:1fr;}}
-.srw{position:relative;width:110px;height:110px;flex-shrink:0;}
-.srw svg{transform:rotate(-90deg);}
-.rtrack{fill:none;stroke:var(--edge2);stroke-width:8;}
-.rfill{fill:none;stroke-width:8;stroke-linecap:round;stroke-dasharray:314;stroke-dashoffset:314;transition:stroke-dashoffset 1.4s cubic-bezier(.16,1,.3,1),stroke .3s;}
-.rcenter{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.rnum{font-family:var(--fd);font-size:34px;letter-spacing:.02em;line-height:1;}
-.rlbl{font-family:var(--fm);font-size:8px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-top:2px;}
-.vc{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;padding:5px 12px;margin-bottom:12px;border:1px solid;}
-.vc.hm{border-color:var(--green);color:var(--green);background:var(--green-dim);}
-.vc.ai{border-color:var(--red);color:var(--red);background:rgba(255,45,85,.06);}
-.vc.mx{border-color:var(--yellow);color:var(--yellow);background:rgba(255,214,10,.06);}
-.vc.df{border-color:var(--red);color:var(--red);background:rgba(255,45,85,.06);}
-.vc.au{border-color:var(--green);color:var(--green);background:var(--green-dim);}
-.vtitle{font-family:var(--fd);font-size:28px;letter-spacing:.04em;margin-bottom:8px;line-height:1.1;}
-.vdesc{font-size:13px;color:var(--muted2);line-height:1.6;}
-.sw{padding:24px 28px;border-bottom:1px solid var(--edge);}
-.slbl{font-family:var(--fm);font-size:9px;letter-spacing:.24em;color:var(--cyan);text-transform:uppercase;margin-bottom:14px;}
-.sl2{list-style:none;display:flex;flex-direction:column;gap:8px;}
-.si{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:var(--panel);border-left:2px solid var(--edge2);font-size:12px;line-height:1.5;}
-.si.p{border-left-color:var(--red);}.si.n{border-left-color:var(--green);}
-.six{font-size:14px;flex-shrink:0;}
-.sit strong{display:block;color:var(--white);font-size:12px;margin-bottom:2px;font-weight:500;}
-.sit span{color:var(--muted2);}
-.ra{padding:20px 28px;display:flex;gap:10px;flex-wrap:wrap;}
-.divider{height:1px;background:var(--edge);margin:24px 0;}
-.igs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
-@media(max-width:500px){.igs{grid-template-columns:1fr 1fr;}}
-.isb{background:var(--panel);border:1px solid var(--edge);padding:20px 16px;text-align:center;}
-.isbl{font-family:var(--fm);font-size:8px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
-.isbv{font-family:var(--fd);font-size:40px;letter-spacing:.02em;line-height:1;}
-.isbv.r{color:var(--red);}.isbv.g{color:var(--green);}.isbv.o{color:#ff6b00;}
-.cbr{margin:20px 0;}
-.cbrl{display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
-.cbrt{height:4px;background:var(--edge2);}
-.cbrf{height:100%;transition:width 1.4s cubic-bezier(.16,1,.3,1);width:0;}
-.cbrf.r{background:linear-gradient(90deg,var(--green),var(--red));}.cbrf.g{background:linear-gradient(90deg,var(--red),var(--green));}
-.cercard{background:var(--surface);border:1px solid var(--edge);position:relative;overflow:hidden;}
-.cercard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--cyan),var(--green));}
-.certtop{padding:24px 28px 20px;border-bottom:1px solid var(--edge);display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;}
-.cbrand{font-family:var(--fd);font-size:20px;letter-spacing:.1em;color:var(--white);}
-.cbrand span{color:var(--cyan);}
-.cbrand small{display:block;font-family:var(--fm);font-size:8px;letter-spacing:.2em;color:var(--muted);font-weight:400;margin-top:3px;}
-.cvb{display:flex;align-items:center;gap:7px;background:var(--green-dim);border:1px solid var(--green);color:var(--green);font-family:var(--fm);font-size:9px;letter-spacing:.2em;text-transform:uppercase;padding:7px 14px;}
-.certbi{padding:24px 28px;}
-.cdoc{font-family:var(--fd);font-size:24px;letter-spacing:.04em;color:var(--white);margin-bottom:4px;}
-.cby{font-family:var(--fm);font-size:11px;color:var(--muted2);margin-bottom:24px;}
-.cby strong{color:var(--cyan);}
-.cscores{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:24px;}
-.csb{background:var(--panel);border:1px solid var(--edge);padding:16px;}
-.csbl{font-family:var(--fm);font-size:8px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:8px;}
-.csbv{font-family:var(--fd);font-size:26px;letter-spacing:.04em;}
-.csbv.c{color:var(--cyan);}.csbv.g{color:var(--green);}.csbv.s{font-size:14px;color:var(--white);font-family:var(--fm);}
-.styw{margin-bottom:24px;}
-.sbr{margin-bottom:10px;}
-.sbt{display:flex;justify-content:space-between;font-family:var(--fm);font-size:9px;color:var(--muted2);letter-spacing:.1em;margin-bottom:5px;text-transform:uppercase;}
-.sbtr{height:3px;background:var(--edge2);}
-.sbf{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));transition:width 1s cubic-bezier(.16,1,.3,1);width:0;}
-.cmt{background:var(--panel);border:1px solid var(--edge);margin-bottom:20px;}
-.cmr{display:flex;justify-content:space-between;align-items:center;padding:8px 16px;border-bottom:1px solid var(--edge);font-family:var(--fm);font-size:10px;gap:12px;flex-wrap:wrap;}
-.cmr:last-child{border-bottom:none;}
-.cmr span:first-child{color:var(--muted2);letter-spacing:.1em;flex-shrink:0;}
-.cmr span:last-child{color:var(--white);word-break:break-all;text-align:right;}
-.ch2{color:var(--cyan)!important;opacity:.8;}
-.certbot{padding:14px 28px;border-top:1px solid var(--edge);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;background:var(--panel);}
-.cft{font-family:var(--fm);font-size:9px;color:var(--muted);letter-spacing:.08em;line-height:1.7;}
-.cid{font-family:var(--fd);font-size:14px;letter-spacing:.1em;color:var(--cyan);}
-.cerr{background:rgba(255,45,85,.05);border:1px solid rgba(255,45,85,.3);padding:24px 28px;}
-.cerrt{font-family:var(--fd);font-size:20px;letter-spacing:.06em;color:var(--red);margin-bottom:10px;}
-.cerrb{font-size:13px;color:var(--muted2);line-height:1.7;}
-.trust-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:48px;}
-.ti{background:var(--surface);border:1px solid var(--edge);padding:20px;display:flex;gap:14px;align-items:flex-start;}
-.tico{font-size:22px;flex-shrink:0;}
-.titn{font-family:var(--fm);font-size:11px;font-weight:500;color:var(--white);margin-bottom:4px;letter-spacing:.06em;}
-.tidesc{font-size:11px;color:var(--muted2);line-height:1.6;}
-footer{position:relative;z-index:1;margin-top:80px;padding:32px 28px;border-top:1px solid var(--edge);max-width:1000px;margin-left:auto;margin-right:auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
-.fl{font-family:var(--fm);font-size:10px;color:var(--muted);letter-spacing:.1em;line-height:1.8;}
-.fr{display:flex;gap:16px;}
-.flink{font-family:var(--fm);font-size:10px;color:var(--muted2);letter-spacing:.1em;text-decoration:none;transition:color .2s;}
-.flink:hover{color:var(--cyan);}
-.toast{position:fixed;bottom:28px;right:28px;background:var(--panel);border:1px solid var(--cyan);color:var(--cyan);font-family:var(--fm);font-size:11px;letter-spacing:.08em;padding:12px 20px;z-index:1000;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.16,1,.3,1);}
-.toast.show{transform:translateY(0);opacity:1;}
+  :root {
+    --bg: #03030a;
+    --bg2: #07071a;
+    --cyan: #00e5ff;
+    --cyan2: #00b8d4;
+    --green: #00ff9d;
+    --red: #ff3d71;
+    --purple: #7b2fff;
+    --text: #e0e0e0;
+    --muted: #556;
+    --border: rgba(0,229,255,0.12);
+    --glass: rgba(0,229,255,0.04);
+    --card: rgba(7,7,26,0.85);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── GRID BG ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 40px;
+    background: rgba(3,3,10,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--cyan);
+    text-shadow: 0 0 20px rgba(0,229,255,0.5);
+    text-decoration: none;
+  }
+
+  .nav-badge {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--green);
+    border: 1px solid var(--green);
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-left: 10px;
+    vertical-align: middle;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--cyan); }
+
+  .nav-auth {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .btn-login {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+  }
+
+  .btn-login:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  .btn-signup {
+    background: var(--cyan);
+    border: none;
+    color: #000;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+
+  .btn-signup:hover {
+    background: var(--green);
+    transform: translateY(-1px);
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+    z-index: 1;
+  }
+
+  .hero-tag {
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0.7;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(56px, 10vw, 120px);
+    line-height: 0.9;
+    letter-spacing: 6px;
+    color: #fff;
+    text-shadow: 0 0 60px rgba(0,229,255,0.2);
+    margin-bottom: 12px;
+  }
+
+  .hero h1 span { color: var(--cyan); }
+
+  .hero-sub {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.8;
+    margin-bottom: 50px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 60px;
+    justify-content: center;
+    margin-bottom: 50px;
+  }
+
+  .stat { text-align: center; }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--cyan);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .cta-primary {
+    background: var(--cyan);
+    color: #000;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 3px;
+    padding: 14px 36px;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .cta-primary:hover { background: var(--green); transform: translateY(-2px); }
+
+  .cta-secondary {
+    background: transparent;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    padding: 14px 36px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  .cta-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  /* ─── SECTION COMMON ─── */
+  section {
+    position: relative;
+    z-index: 1;
+    padding: 100px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    font-size: 9px;
+    letter-spacing: 5px;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 64px);
+    letter-spacing: 4px;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 500px;
+    margin-bottom: 60px;
+  }
+
+  /* ─── TOOLS ─── */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 24px;
+  }
+
+  .tool-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 36px;
+    backdrop-filter: blur(10px);
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tool-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .tool-card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-4px); }
+  .tool-card:hover::before { opacity: 1; }
+
+  .tool-icon {
+    font-size: 28px;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .tool-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+
+  .tool-model {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  textarea, input[type="text"] {
+    width: 100%;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 14px;
+    resize: vertical;
+    transition: border-color 0.3s;
+    outline: none;
+    min-height: 120px;
+  }
+
+  textarea:focus, input[type="text"]:focus { border-color: var(--cyan); }
+
+  input[type="text"] { min-height: unset; height: 44px; resize: none; }
+
+  .char-count {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin: 8px 0;
+    text-align: right;
+  }
+
+  .btn-action {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    margin-top: 12px;
+  }
+
+  .btn-action:hover { background: var(--cyan); color: #000; }
+  .btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .result-box {
+    margin-top: 20px;
+    padding: 16px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    display: none;
+    font-size: 11px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .result-box.show { display: block; }
+
+  .result-score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    text-align: center;
+    padding: 10px 0;
+  }
+
+  .result-ai { color: var(--red); }
+  .result-human { color: var(--green); }
+
+  .result-label {
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .result-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    margin: 8px 0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .result-bar-fill {
+    height: 100%;
+    background: var(--cyan);
+    transition: width 0.8s ease;
+  }
+
+  .drop-zone {
+    border: 1px dashed var(--border);
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+    background: rgba(0,0,0,0.2);
+  }
+
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--cyan);
+    background: rgba(0,229,255,0.03);
+  }
+
+  .drop-zone input[type="file"] { display: none; }
+
+  .drop-text { font-size: 11px; color: var(--muted); letter-spacing: 1px; line-height: 2; }
+
+  #preview-img {
+    max-width: 100%;
+    margin-top: 16px;
+    border: 1px solid var(--border);
+    display: none;
+  }
+
+  /* ─── PRICING ─── */
+  #pricing { max-width: 1200px; }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    margin-bottom: 60px;
+  }
+
+  @media (max-width: 768px) {
+    .pricing-grid { grid-template-columns: 1fr; }
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+  }
+
+  .pricing-card {
+    background: var(--bg);
+    padding: 48px 36px;
+    position: relative;
+    transition: background 0.3s;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pricing-card:hover { background: var(--bg2); }
+
+  .pricing-card.featured {
+    background: var(--bg2);
+    border-top: 2px solid var(--cyan);
+  }
+
+  .plan-badge {
+    position: absolute;
+    top: -1px;
+    right: 24px;
+    background: var(--cyan);
+    color: #000;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 4px 12px;
+    text-transform: uppercase;
+  }
+
+  .plan-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 5px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .plan-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    line-height: 1;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .plan-price sup {
+    font-size: 24px;
+    vertical-align: top;
+    margin-top: 16px;
+    display: inline-block;
+    color: var(--muted);
+  }
+
+  .plan-price .coming {
+    font-size: 28px;
+    color: var(--cyan);
+    letter-spacing: 2px;
+  }
+
+  .plan-period {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 36px;
+    text-transform: uppercase;
+  }
+
+  .plan-features {
+    list-style: none;
+    margin-bottom: 40px;
+    flex: 1;
+  }
+
+  .plan-features li {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--text);
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    line-height: 1.5;
+  }
+
+  .plan-features li .check { color: var(--green); font-size: 12px; flex-shrink: 0; }
+  .plan-features li .cross { color: var(--muted); font-size: 12px; flex-shrink: 0; }
+  .plan-features li.muted { color: var(--muted); }
+
+  .btn-plan {
+    width: 100%;
+    padding: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+  }
+
+  .btn-plan-free {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .btn-plan-free:hover { border-color: var(--cyan); color: var(--cyan); }
+
+  .btn-plan-pro {
+    background: var(--cyan);
+    color: #000;
+  }
+
+  .btn-plan-pro:hover { background: var(--green); transform: translateY(-2px); }
+
+  .btn-plan-elite {
+    background: transparent;
+    border: 1px solid var(--purple);
+    color: var(--purple);
+  }
+
+  .btn-plan-elite:hover { background: var(--purple); color: #fff; }
+
+  .pricing-note {
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 60px;
+  }
+
+  .pricing-note span {
+    color: var(--cyan);
+    border: 1px solid rgba(0,229,255,0.3);
+    padding: 2px 10px;
+    margin: 0 4px;
+  }
+
+  /* ─── FAQ ─── */
+  .faq-list { max-width: 720px; }
+
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .faq-q {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    padding: 20px 0;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: color 0.3s;
+  }
+
+  .faq-q:hover { color: var(--cyan); }
+
+  .faq-q .arrow {
+    font-size: 16px;
+    transition: transform 0.3s;
+    color: var(--cyan);
+  }
+
+  .faq-q.open .arrow { transform: rotate(45deg); }
+
+  .faq-a {
+    max-height: 0;
+    overflow: hidden;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.9;
+    letter-spacing: 0.5px;
+    transition: max-height 0.4s ease, padding 0.3s;
+  }
+
+  .faq-a.open { max-height: 200px; padding-bottom: 20px; }
+
+  /* ─── TRUST ─── */
+  .trust-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--border);
+  }
+
+  .trust-item {
+    background: var(--bg);
+    padding: 40px 30px;
+    text-align: center;
+  }
+
+  .trust-icon { font-size: 28px; margin-bottom: 16px; display: block; }
+  .trust-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 3px;
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+  .trust-desc { font-size: 10px; letter-spacing: 1px; color: var(--muted); line-height: 1.8; }
+
+  /* ─── AUTH MODAL ─── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 48px;
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s;
+  }
+
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 20px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 20px;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    transition: color 0.3s;
+  }
+
+  .modal-close:hover { color: var(--red); }
+
+  .modal-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 36px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-tab {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    padding: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: all 0.3s;
+  }
+
+  .modal-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 4px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .modal-sub {
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 30px;
+    line-height: 1.8;
+  }
+
+  .form-field {
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.3s;
+    height: 44px;
+    min-height: unset;
+    resize: none;
+  }
+
+  .form-input:focus { border-color: var(--cyan); }
+
+  .btn-auth {
+    width: 100%;
+    background: var(--cyan);
+    color: #000;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    padding: 14px;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-top: 24px;
+    transition: all 0.3s;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  }
+
+  .btn-auth:hover { background: var(--green); }
+
+  .form-alt {
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-top: 20px;
+  }
+
+  .form-alt a {
+    color: var(--cyan);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .auth-success {
+    text-align: center;
+    padding: 20px;
+    display: none;
+  }
+
+  .auth-success .big { font-size: 48px; margin-bottom: 16px; display: block; }
+  .auth-success p { font-size: 11px; letter-spacing: 2px; color: var(--green); }
+
+  /* ─── WAITLIST MODAL ─── */
+  .waitlist-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 998;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .waitlist-overlay.open { opacity: 1; pointer-events: all; }
+
+  .waitlist-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--cyan);
+    padding: 48px;
+    width: 100%;
+    max-width: 420px;
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s;
+  }
+
+  .waitlist-overlay.open .waitlist-box { transform: scale(1); }
+
+  .waitlist-plan-name {
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--cyan);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    text-align: center;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--muted);
+  }
+
+  footer a { color: var(--cyan); text-decoration: none; margin: 0 12px; }
+  footer a:hover { color: var(--green); }
+
+  /* ─── LOADER ─── */
+  .loader {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--cyan);
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  .loader.show { display: block; }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ─── NOTIFICATION ─── */
+  .notif {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--bg2);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    padding: 14px 24px;
+    z-index: 9999;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.4s;
+  }
+
+  .notif.show { transform: translateY(0); opacity: 1; }
 </style>
 </head>
 <body>
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<div class="wrap">
+
+<!-- NAV -->
 <nav>
-  <div class="nl">
-    <svg class="lm" viewBox="0 0 36 36" fill="none">
-      <polygon points="18,2 32,10 32,26 18,34 4,26 4,10" fill="none" stroke="#00e5ff" stroke-width="1.2" opacity=".3"/>
-      <polygon points="18,7 28,13 28,23 18,29 8,23 8,13" fill="none" stroke="#00e5ff" stroke-width="1" opacity=".6"/>
-      <path d="M13 11 L13 25 L23 25 L23 20 L18 20 L18 11 Z" fill="#00e5ff"/>
-      <circle cx="23" cy="13" r="2.5" fill="#00ffb3"/>
-    </svg>
-    <div class="lt">LUM<span>ORA</span></div>
+  <div>
+    <a href="#" class="nav-logo">LUMORA</a>
+    <span class="nav-badge">LIVE</span>
   </div>
-  <div class="nr">
-    <div class="ns"><div class="sd"></div>LIVE</div>
-    <div class="nb">Beta v0.3</div>
+  <ul class="nav-links">
+    <li><a href="#tools">Verify</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <div class="nav-auth">
+    <button class="btn-login" onclick="openAuth('login')">Login</button>
+    <button class="btn-signup" onclick="openAuth('signup')">Sign Up</button>
   </div>
 </nav>
 
+<!-- HERO -->
 <div class="hero">
-  <div class="eyebrow">AI Trust Infrastructure</div>
-  <h1>
-    <span class="bl">THE WORLD</span>
-    <span class="bl">NEEDS <span class="hl">TRUTH.</span></span>
-  </h1>
-  <p class="hero-sub">AI is everywhere. <strong>Fakes are everywhere.</strong> LUMORA is the verification layer that separates real from artificial — for text, images, and human identity.</p>
-  <div class="stats">
-    <div class="stat"><div class="sn">3</div><div class="sl">AI Models</div></div>
-    <div class="stat"><div class="sn">99%</div><div class="sl">Accuracy</div></div>
-    <div class="stat"><div class="sn">0ms</div><div class="sl">Signup Needed</div></div>
-    <div class="stat"><div class="sn">∞</div><div class="sl">Possibilities</div></div>
+  <p class="hero-tag">// Beta v0.3 — AI Trust Infrastructure</p>
+  <h1>THE WORLD<br>NEEDS <span>TRUTH.</span></h1>
+  <p class="hero-sub">AI is everywhere. Fakes are everywhere. LUMORA is the verification layer that separates real from artificial — for text, images, and human identity.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-val">3</span><span class="stat-label">AI Models</span></div>
+    <div class="stat"><span class="stat-val">99%</span><span class="stat-label">Accuracy</span></div>
+    <div class="stat"><span class="stat-val">0ms</span><span class="stat-label">Signup Needed</span></div>
+  </div>
+  <div class="hero-cta">
+    <a href="#tools" class="cta-primary">Start Verifying →</a>
+    <a href="#pricing" class="cta-secondary">View Pricing</a>
   </div>
 </div>
 
-<div class="fh">
-  <div class="stitle">// Choose Verification</div>
-  <div class="tbar">
-    <button class="tbtn active" onclick="swTab('detect',this)">Text AI</button>
-    <button class="tbtn" onclick="swTab('image',this)">Deepfake</button>
-    <button class="tbtn" onclick="swTab('cert',this)">Certificate</button>
+<!-- TOOLS -->
+<section id="tools">
+  <div class="reveal">
+    <p class="section-tag">// Choose Verification Mode</p>
+    <h2 class="section-title">VERIFY NOW</h2>
+    <p class="section-sub">No signup. No data stored. AI-powered verification in seconds.</p>
   </div>
-</div>
 
-<!-- TAB 1 -->
-<div class="tsec active" id="tab-detect">
-  <div class="mc">
-    <div class="ch"><div class="ct">Analyze Text</div><span style="font-family:var(--fm);font-size:10px;color:var(--muted2);">chatgpt-detector-roberta</span></div>
-    <div class="cb">
-      <textarea id="tIn" placeholder="Paste any text — article, email, essay, message...&#10;&#10;LUMORA will tell you if a machine wrote it."></textarea>
-      <div class="mr"><span class="cc2" id="cc">0 characters</span><button class="bp" id="aBtn" onclick="analyze()" disabled>ANALYZE →</button></div>
+  <div class="tools-grid">
+
+    <!-- TEXT AI DETECTION -->
+    <div class="tool-card reveal">
+      <span class="tool-icon">⚡</span>
+      <div class="tool-name">AI Text Detection</div>
+      <div class="tool-model">chatgpt-detector-roberta</div>
+      <textarea id="text-input" placeholder="Paste text here to analyze..." oninput="updateChar(this,'text-char')"></textarea>
+      <div class="char-count"><span id="text-char">0</span> characters</div>
+      <button class="btn-action" id="text-btn" onclick="analyzeText()">ANALYZE →</button>
+      <div class="loader" id="text-loader">SCANNING SIGNALS...</div>
+      <div class="result-box" id="text-result"></div>
     </div>
-  </div>
-  <div class="ld" id="ld"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>Scanning signals...</div>
-  <div class="rw" id="res">
-    <div class="rc" id="rc">
-      <div class="sh">
-        <div class="srw"><svg width="110" height="110" viewBox="0 0 110 110"><circle class="rtrack" cx="55" cy="55" r="50"/><circle class="rfill" id="rf" cx="55" cy="55" r="50"/></svg><div class="rcenter"><div class="rnum" id="rn">—</div><div class="rlbl">Trust</div></div></div>
-        <div><div class="vc" id="vch">—</div><div class="vtitle" id="vtitle">—</div><div class="vdesc" id="vdesc">—</div></div>
+
+    <!-- DEEPFAKE DETECTION -->
+    <div class="tool-card reveal">
+      <span class="tool-icon">🔍</span>
+      <div class="tool-name">Deepfake Detection</div>
+      <div class="tool-model">deepfake_vs_real_image_detection</div>
+      <div class="drop-zone" id="drop-zone" onclick="document.getElementById('img-input').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+        <input type="file" id="img-input" accept="image/*" onchange="fileSelected(event)" />
+        <div class="drop-text">DROP IMAGE HERE<br><small>JPG · PNG · WEBP · Max 5MB</small></div>
       </div>
-      <div class="sw"><div class="slbl">Signal Breakdown</div><ul class="sl2" id="slist"></ul></div>
-      <div class="ra">
-        <button class="bo" onclick="cpRes()">Copy Result</button>
-        <button class="bo" onclick="dlRes()">Download</button>
-        <button class="bo" id="certSC" onclick="goToCert()" style="display:none;border-color:var(--green);color:var(--green);">Get Certificate →</button>
-        <button class="bo" onclick="rstText()">New Analysis</button>
+      <img id="preview-img" />
+      <button class="btn-action" id="img-btn" onclick="analyzeImage()">SCAN IMAGE →</button>
+      <div class="loader" id="img-loader">SCANNING FOR DEEPFAKE PATTERNS...</div>
+      <div class="result-box" id="img-result"></div>
+    </div>
+
+    <!-- AUTHORSHIP CERTIFICATE -->
+    <div class="tool-card reveal">
+      <span class="tool-icon">🔒</span>
+      <div class="tool-name">Authorship Certificate</div>
+      <div class="tool-model">Human Verification Engine</div>
+      <input type="text" id="cert-name" placeholder="Your Name" class="form-input" style="margin-bottom:10px;min-height:unset;height:44px" />
+      <input type="text" id="cert-title" placeholder="Document Title" class="form-input" style="margin-bottom:10px;min-height:unset;height:44px" />
+      <textarea id="cert-text" placeholder="Your writing to certify..." oninput="updateChar(this,'cert-char')"></textarea>
+      <div class="char-count"><span id="cert-char">0</span> characters</div>
+      <button class="btn-action" id="cert-btn" onclick="generateCert()">GENERATE CERTIFICATE →</button>
+      <div class="loader" id="cert-loader">VERIFYING AUTHORSHIP...</div>
+      <div class="result-box" id="cert-result"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TRUST -->
+<section id="about" style="padding-top:0">
+  <div class="trust-grid reveal">
+    <div class="trust-item">
+      <span class="trust-icon">🔒</span>
+      <div class="trust-title">Zero Storage</div>
+      <div class="trust-desc">Your content is analyzed and immediately discarded. Nothing is ever saved.</div>
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">⚡</span>
+      <div class="trust-title">Instant Results</div>
+      <div class="trust-desc">AI-powered analysis in seconds. No queues, no waiting, no friction.</div>
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">🌍</span>
+      <div class="trust-title">Global Standard</div>
+      <div class="trust-desc">Built to become the world's verification infrastructure by 2032.</div>
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">🤖</span>
+      <div class="trust-title">Open AI Models</div>
+      <div class="trust-desc">Powered by state-of-the-art open-source detection models.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="max-width:100%;padding:100px 40px">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="reveal">
+      <p class="section-tag">// Transparent Pricing</p>
+      <h2 class="section-title">CHOOSE YOUR PLAN</h2>
+      <p class="section-sub">Simple pricing. No hidden fees. Payment coming soon — join the waitlist to lock your rate.</p>
+    </div>
+
+    <div class="pricing-grid reveal">
+
+      <!-- FREE -->
+      <div class="pricing-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">₹0</div>
+        <div class="plan-period">Forever free</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> 5 AI text detections/day</li>
+          <li><span class="check">✓</span> 5 image scans/day</li>
+          <li><span class="check">✓</span> Basic authorship cert</li>
+          <li class="muted"><span class="cross">—</span> No API access</li>
+          <li class="muted"><span class="cross">—</span> No priority queue</li>
+          <li class="muted"><span class="cross">—</span> No enterprise support</li>
+        </ul>
+        <button class="btn-plan btn-plan-free" onclick="openWaitlist('Free')">GET STARTED →</button>
+      </div>
+
+      <!-- PRO -->
+      <div class="pricing-card featured">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price"><span class="coming">COMING SOON</span></div>
+        <div class="plan-period">₹499/month — Payment Opening Soon</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Unlimited text detections</li>
+          <li><span class="check">✓</span> Unlimited image scans</li>
+          <li><span class="check">✓</span> Premium certificates w/ QR</li>
+          <li><span class="check">✓</span> API access (1000 calls/mo)</li>
+          <li><span class="check">✓</span> Priority processing</li>
+          <li class="muted"><span class="cross">—</span> No enterprise support</li>
+        </ul>
+        <button class="btn-plan btn-plan-pro" onclick="openWaitlist('Pro')">JOIN WAITLIST →</button>
+      </div>
+
+      <!-- ELITE -->
+      <div class="pricing-card">
+        <div class="plan-name">Elite</div>
+        <div class="plan-price"><span class="coming" style="color:var(--purple)">COMING SOON</span></div>
+        <div class="plan-period">₹1999/month — Enterprise</div>
+        <ul class="plan-features">
+          <li><span class="check">✓</span> Everything in Pro</li>
+          <li><span class="check">✓</span> Unlimited API access</li>
+          <li><span class="check">✓</span> Custom verification workflows</li>
+          <li><span class="check">✓</span> White-label certificates</li>
+          <li><span class="check">✓</span> Dedicated support</li>
+          <li><span class="check">✓</span> SLA guarantee</li>
+        </ul>
+        <button class="btn-plan btn-plan-elite" onclick="openWaitlist('Elite')">CONTACT US →</button>
+      </div>
+
+    </div>
+
+    <div class="pricing-note reveal">
+      🔒 Payments not live yet &nbsp;·&nbsp; Join waitlist to lock early-bird rate &nbsp;·&nbsp;
+      <span>Razorpay Integration</span> coming Q3 2026
+    </div>
+
+    <!-- FAQ -->
+    <div class="reveal">
+      <p class="section-tag" style="margin-bottom:24px">// Common Questions</p>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Is the free plan really free forever?
+            <span class="arrow">+</span>
+          </button>
+          <div class="faq-a">Yes. The free tier will always exist. We believe verification should be accessible to everyone. Paid plans unlock higher limits and API access for power users and businesses.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            When will payments go live?
+            <span class="arrow">+</span>
+          </button>
+          <div class="faq-a">We're integrating Razorpay and targeting Q3 2026 for paid plan launch. Join the waitlist now to lock your early-bird pricing — waitlist members get up to 40% off.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Is my data safe? Do you store anything?
+            <span class="arrow">+</span>
+          </button>
+          <div class="faq-a">Zero storage. Your text and images are processed in real-time by our AI models and immediately discarded. We never store, log, or analyze your content beyond the immediate verification request.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            Can I use LUMORA for my business?
+            <span class="arrow">+</span>
+          </button>
+          <div class="faq-a">Absolutely. The Elite plan is designed for enterprise use cases — bulk verification, API integration, white-label certificates, and dedicated support. Contact us to discuss custom needs.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            What is an authorship certificate?
+            <span class="arrow">+</span>
+          </button>
+          <div class="faq-a">A cryptographically unique document that proves you wrote a piece of text at a specific time. It includes a unique ID, writing fingerprint analysis, and timestamp — useful for journalists, academics, and creators.</div>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- TAB 2 -->
-<div class="tsec" id="tab-image">
-  <div class="mc">
-    <div class="ch"><div class="ct">Upload Image</div><span style="font-family:var(--fm);font-size:10px;color:var(--muted2);">deepfake_vs_real_image_detection</span></div>
-    <div class="cb">
-      <div class="uz" id="uz"><input type="file" id="imgIn" accept="image/*" onchange="hImg(event)"/><span class="ui">🔍</span><div class="ut">DROP IMAGE HERE</div><div class="uh">JPG · PNG · WEBP · Max <strong>5MB</strong><br>Profile photos · News images · Screenshots</div></div>
-      <div class="ipw" id="ipw"><img id="ip" src="" alt=""/><div class="in2" id="iname"></div></div>
-      <div class="mr" style="margin-top:16px;"><span class="cc2" id="iinfo">No file selected</span><button class="bp bo2" id="scBtn" onclick="scanImg()" disabled>SCAN IMAGE →</button></div>
-    </div>
-  </div>
-  <div class="ld" id="imgLd"><div class="dots"><div class="dot or"></div><div class="dot or"></div><div class="dot or"></div></div>Scanning for deepfake patterns...</div>
-  <div class="rw" id="imgRes"></div>
-</div>
-
-<!-- TAB 3 -->
-<div class="tsec" id="tab-cert">
-  <div class="mc">
-    <div class="ch"><div class="ct">Author Details</div><span style="font-family:var(--fm);font-size:10px;color:var(--muted2);">Human Verification Engine</span></div>
-    <div class="cb">
-      <div class="ir2">
-        <div class="ig"><label class="il">Your Name</label><input type="text" id="aname" placeholder="e.g. Seren Patil" maxlength="80"/></div>
-        <div class="ig"><label class="il">Document Title</label><input type="text" id="dtitle" placeholder="e.g. Q2 Marketing Report" maxlength="120"/></div>
-      </div>
-      <div class="il" style="margin-bottom:8px;">Your Writing</div>
-      <textarea id="cta" placeholder="Paste your writing here — article, essay, proposal, email...&#10;&#10;LUMORA will verify it's human-authored and issue a certificate."></textarea>
-      <div class="mr"><span class="cc2" id="ccc">0 characters</span><button class="bp bg" id="cBtn" onclick="genCert()" disabled>GENERATE CERTIFICATE →</button></div>
-    </div>
-  </div>
-  <div class="ld" id="cLd"><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>Verifying authorship...</div>
-  <div class="rw" id="cRes"></div>
-</div>
-
-<div class="trust-row">
-  <div class="ti"><div class="tico">🔒</div><div><div class="titn">No Data Stored</div><div class="tidesc">Your content is analyzed and discarded. Nothing is saved.</div></div></div>
-  <div class="ti"><div class="tico">⚡</div><div><div class="titn">Instant Results</div><div class="tidesc">AI-powered analysis in seconds. No queues, no waiting.</div></div></div>
-  <div class="ti"><div class="tico">🌍</div><div><div class="titn">Global Standard</div><div class="tidesc">Built to become the world's verification infrastructure by 2032.</div></div></div>
-  <div class="ti"><div class="tico">🤖</div><div><div class="titn">Open AI Models</div><div class="tidesc">Powered by state-of-the-art open-source detection models.</div></div></div>
-</div>
-</div>
-
+<!-- FOOTER -->
 <footer>
-  <div class="fl">LUMORA © 2026 — AI Trust Infrastructure<br>Built to solve the global truth crisis.</div>
-  <div class="fr"><a href="#" class="flink">API Access</a><a href="#" class="flink">Pricing</a><a href="#" class="flink">About</a></div>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;color:var(--cyan);margin-bottom:16px;">LUMORA</div>
+  <div style="margin-bottom:16px;">
+    <a href="#tools">Verify</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#about">About</a>
+    <a href="mailto:lumora@support.com">Contact</a>
+  </div>
+  LUMORA © 2026 — AI Trust Infrastructure<br>
+  <span style="color:rgba(85,85,102,0.5)">Built to solve the global truth crisis.</span>
 </footer>
-<div class="toast" id="toast"></div>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuth()">✕</button>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tab-login" onclick="switchTab('login')">LOGIN</button>
+      <button class="modal-tab" id="tab-signup" onclick="switchTab('signup')">SIGN UP</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <div class="modal-title">WELCOME BACK</div>
+      <div class="modal-sub">Sign in to access your verification history and API keys.</div>
+      <div class="form-field">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="login-email" placeholder="you@domain.com" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="login-pass" placeholder="••••••••" />
+      </div>
+      <button class="btn-auth" onclick="handleLogin()">LOGIN →</button>
+      <div class="form-alt">No account? <a onclick="switchTab('signup')">Sign up free</a></div>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="signup-form" style="display:none">
+      <div class="modal-title">JOIN LUMORA</div>
+      <div class="modal-sub">Create your free account. No credit card required.</div>
+      <div class="form-field">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-input" id="signup-name" placeholder="Seren Patil" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="signup-email" placeholder="you@domain.com" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="signup-pass" placeholder="Min 8 characters" />
+      </div>
+      <button class="btn-auth" onclick="handleSignup()">CREATE ACCOUNT →</button>
+      <div class="form-alt">Have an account? <a onclick="switchTab('login')">Login</a></div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="auth-success" id="auth-success">
+      <span class="big">✅</span>
+      <p id="success-msg">ACCOUNT CREATED — WELCOME TO LUMORA</p>
+    </div>
+  </div>
+</div>
+
+<!-- WAITLIST MODAL -->
+<div class="waitlist-overlay" id="waitlist-modal">
+  <div class="waitlist-box">
+    <button class="modal-close" onclick="closeWaitlist()">✕</button>
+    <div class="waitlist-plan-name" id="waitlist-plan-label">PRO PLAN</div>
+    <div class="modal-title">JOIN WAITLIST</div>
+    <div class="modal-sub">Payments open Q3 2026. Join now to lock early-bird pricing — up to 40% off.</div>
+    <div class="form-field">
+      <label class="form-label">Your Name</label>
+      <input type="text" class="form-input" id="wl-name" placeholder="Your name" />
+    </div>
+    <div class="form-field">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-input" id="wl-email" placeholder="you@domain.com" />
+    </div>
+    <button class="btn-auth" onclick="submitWaitlist()">LOCK MY SPOT →</button>
+    <div id="wl-success" style="display:none;text-align:center;padding:20px">
+      <div style="font-size:40px;margin-bottom:12px">🎯</div>
+      <div style="color:var(--green);font-size:11px;letter-spacing:2px">YOU'RE ON THE LIST!</div>
+      <div style="color:var(--muted);font-size:10px;margin-top:8px">We'll notify you when payments go live.</div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif"></div>
 
 <script>
-const API='https://aggnes99-lumora-backend.hf.space';
-let lScore=null,lText='',lCert=null,imgF=null;
-const tIn=document.getElementById('tIn'),aBtn=document.getElementById('aBtn'),cc=document.getElementById('cc');
-const cta=document.getElementById('cta'),cBtn=document.getElementById('cBtn'),ccc=document.getElementById('ccc');
-const scBtn=document.getElementById('scBtn');
+  const API_BASE = 'https://aggnes99-lumora-backend.hf.space';
 
-function swTab(id,btn){document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tsec').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');btn.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+  // ─── UTILS ───
+  function updateChar(el, id) {
+    document.getElementById(id).textContent = el.value.length;
+  }
 
-tIn.addEventListener('input',()=>{const l=tIn.value.length;cc.textContent=`${l.toLocaleString()} characters`;aBtn.disabled=l<30;});
-cta.addEventListener('input',()=>{const l=cta.value.length;ccc.textContent=`${l.toLocaleString()} characters`;cBtn.disabled=l<30;});
+  function showNotif(msg, color = 'var(--cyan)') {
+    const n = document.getElementById('notif');
+    n.textContent = msg;
+    n.style.borderColor = color;
+    n.style.color = color;
+    n.classList.add('show');
+    setTimeout(() => n.classList.remove('show'), 3000);
+  }
 
-function hImg(e){const f=e.target.files[0];if(!f)return;if(f.size>5*1024*1024){toast('Max 5MB.');return;}imgF=f;document.getElementById('iinfo').textContent=`${f.name} · ${(f.size/1024).toFixed(1)} KB`;scBtn.disabled=false;const r=new FileReader();r.onload=ev=>{document.getElementById('ip').src=ev.target.result;document.getElementById('iname').textContent=f.name;document.getElementById('ipw').style.display='block';};r.readAsDataURL(f);document.getElementById('imgRes').style.display='none';}
+  // ─── SCROLL REVEAL ───
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => observer.observe(el));
 
-const uz=document.getElementById('uz');
-uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('drag');});
-uz.addEventListener('dragleave',()=>uz.classList.remove('drag'));
-uz.addEventListener('drop',e=>{e.preventDefault();uz.classList.remove('drag');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/')){const dt=new DataTransfer();dt.items.add(f);document.getElementById('imgIn').files=dt.files;hImg({target:{files:[f]}});}});
+  // ─── TEXT ANALYSIS ───
+  async function analyzeText() {
+    const text = document.getElementById('text-input').value.trim();
+    if (text.length < 50) { showNotif('⚠ Enter at least 50 characters', 'var(--red)'); return; }
+    const btn = document.getElementById('text-btn');
+    const loader = document.getElementById('text-loader');
+    const result = document.getElementById('text-result');
+    btn.disabled = true; loader.classList.add('show'); result.classList.remove('show');
+    try {
+      const res = await fetch(`${API_BASE}/detect-text`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      const score = Math.round((data.ai_probability || 0) * 100);
+      const isAI = score > 50;
+      result.innerHTML = `
+        <div class="result-score ${isAI ? 'result-ai' : 'result-human'}">${score}%</div>
+        <div class="result-label">${isAI ? '⚠ AI GENERATED' : '✓ LIKELY HUMAN'}</div>
+        <div style="font-size:9px;letter-spacing:2px;color:var(--muted);margin-bottom:8px">AI PROBABILITY</div>
+        <div class="result-bar"><div class="result-bar-fill" style="width:${score}%;background:${isAI?'var(--red)':'var(--green)'}"></div></div>
+        ${data.details ? `<div style="margin-top:12px;font-size:10px;color:var(--muted)">${data.details}</div>` : ''}
+      `;
+      result.classList.add('show');
+    } catch (err) {
+      result.innerHTML = `<div style="color:var(--red);font-size:11px">⚠ Error: ${err.message}</div>`;
+      result.classList.add('show');
+    } finally {
+      btn.disabled = false; loader.classList.remove('show');
+    }
+  }
 
-async function scanImg(){if(!imgF)return;document.getElementById('imgRes').style.display='none';document.getElementById('imgLd').style.display='flex';scBtn.disabled=true;const r=new FileReader();r.onload=async e=>{try{const res=await fetch(`${API}/analyze-image`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image_base64:e.target.result})});const d=await res.json();document.getElementById('imgLd').style.display='none';scBtn.disabled=false;rImg(d);}catch(err){document.getElementById('imgLd').style.display='none';scBtn.disabled=false;toast('Connection error.');}};r.readAsDataURL(imgF);}
+  // ─── IMAGE / DEEPFAKE ───
+  let selectedFile = null;
 
-async function analyze(){const text=tIn.value.trim();if(text.length<30)return;lText=text;document.getElementById('res').style.display='none';document.getElementById('ld').style.display='flex';aBtn.disabled=true;try{const res=await fetch(`${API}/analyze`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});const d=await res.json();lScore=d;document.getElementById('ld').style.display='none';rText(d);}catch(err){document.getElementById('ld').style.display='none';aBtn.disabled=false;toast('Connection error.');}}
+  function dragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('drag-over'); }
+  function dragLeave(e) { document.getElementById('drop-zone').classList.remove('drag-over'); }
 
-async function genCert(){const text=cta.value.trim();const name=document.getElementById('aname').value.trim()||'Anonymous';const title=document.getElementById('dtitle').value.trim()||'Untitled Document';if(text.length<30)return;document.getElementById('cRes').style.display='none';document.getElementById('cLd').style.display='flex';cBtn.disabled=true;try{const res=await fetch(`${API}/certificate`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,author_name:name,document_title:title})});const d=await res.json();document.getElementById('cLd').style.display='none';cBtn.disabled=false;res.status===422||d.error?rCertErr(d):(lCert=d,rCert(d));}catch(err){document.getElementById('cLd').style.display='none';cBtn.disabled=false;toast('Connection error.');}}
+  function dropFile(e) {
+    e.preventDefault();
+    document.getElementById('drop-zone').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) processImageFile(file);
+  }
 
-function rText(s){const el=document.getElementById('res');el.style.display='block';const ring=document.getElementById('rf');const off=314-(s.trust/100)*314;const col=s.trust>=70?'var(--green)':s.trust>=40?'var(--yellow)':'var(--red)';ring.style.stroke=col;setTimeout(()=>{ring.style.strokeDashoffset=off;},50);const ne=document.getElementById('rn');ne.style.color=col;let n=0;const iv=setInterval(()=>{n=Math.min(n+2,s.trust);ne.textContent=n;if(n>=s.trust)clearInterval(iv);},18);const ch=document.getElementById('vch'),vt=document.getElementById('vtitle'),vd=document.getElementById('vdesc');const card=document.getElementById('rc');card.className='rc';if(s.trust>=70){card.classList.add('hm');ch.className='vc hm';ch.textContent='✓ Human Written';vt.textContent='High Trust Content';vd.textContent=`Strong signals of authentic human authorship. AI probability: ${s.ai_probability}%.`;document.getElementById('certSC').style.display='inline-flex';}else if(s.trust>=40){card.classList.add('mx');ch.className='vc mx';ch.textContent='⚡ Mixed Signals';vt.textContent='Uncertain Origin';vd.textContent='Content shows both AI and human patterns.';document.getElementById('certSC').style.display='none';}else{card.classList.add('ai');ch.className='vc ai';ch.textContent='⚠ AI Generated';vt.textContent='Low Trust Score';vd.textContent=`Strong AI indicators detected. AI probability: ${s.ai_probability}%.`;document.getElementById('certSC').style.display='none';}document.getElementById('slist').innerHTML=s.signals.map(sig=>`<li class="si ${sig.type==='positive'?'p':'n'}"><span class="six">${sig.icon}</span><div class="sit"><strong>${sig.title}</strong><span>${sig.desc}</span></div></li>`).join('');el.scrollIntoView({behavior:'smooth',block:'start'});}
+  function fileSelected(e) {
+    const file = e.target.files[0];
+    if (file) processImageFile(file);
+  }
 
-function rImg(d){const el=document.getElementById('imgRes');el.style.display='block';if(!d.success){el.innerHTML=`<div class="rc" style="padding:32px;text-align:center;"><div style="font-family:var(--fd);font-size:22px;color:var(--yellow);margin-bottom:10px;">MODEL WARMING UP</div><div style="font-family:var(--fm);font-size:12px;color:var(--muted2);margin-bottom:20px;">${d.error||'Wait 30s and try again.'}</div><button class="bp bo2" onclick="scanImg()">TRY AGAIN →</button></div>`;el.scrollIntoView({behavior:'smooth',block:'start'});return;}const fake=d.verdict==='DEEPFAKE';el.innerHTML=`<div class="rc ${fake?'ai':'hm'}"><div class="sh"><div style="grid-column:span 2;"><div class="vc ${fake?'df':'au'}">${fake?'⚠ Deepfake Detected':'✓ Authentic Image'}</div><div class="vtitle">${fake?'AI Manipulation Found':'Image Appears Real'}</div><div class="vdesc">${fake?`Deepfake probability: ${d.deepfake_probability}%. Confidence: ${d.confidence}%.`:`Real probability: ${d.real_probability}%. No deepfake patterns detected.`}</div></div></div><div class="sw"><div class="igs"><div class="isb"><div class="isbl">Deepfake %</div><div class="isbv ${d.deepfake_probability>50?'r':'g'}">${d.deepfake_probability}<span style="font-size:18px;opacity:.5">%</span></div></div><div class="isb"><div class="isbl">Real %</div><div class="isbv ${d.real_probability>50?'g':'r'}">${d.real_probability}<span style="font-size:18px;opacity:.5">%</span></div></div><div class="isb"><div class="isbl">Confidence</div><div class="isbv o">${d.confidence}<span style="font-size:18px;opacity:.5">%</span></div></div></div><div class="cbr"><div class="cbrl"><span>Real</span><span>Deepfake</span></div><div class="cbrt"><div class="cbrf ${fake?'r':'g'}" id="cb" data-p="${d.deepfake_probability}"></div></div></div><ul class="sl2"><li class="si ${fake?'p':'n'}"><span class="six">${fake?'⚠️':'✅'}</span><div class="sit"><strong>${fake?'Deepfake Artifacts Detected':'Natural Camera Patterns'}</strong><span>${fake?'GAN/diffusion artifacts found.':'Pixel patterns consistent with real camera.'}</span></div></li><li class="si n"><span class="six">🤖</span><div class="sit"><strong>deepfake_vs_real_image_detection</strong><span>Vision transformer trained on real vs AI-generated images.</span></div></li></ul></div><div class="ra"><button class="bo" onclick="navigator.clipboard.writeText('LUMORA Deepfake Scan\\nVerdict: ${d.verdict}\\nDeepfake: ${d.deepfake_probability}%\\nReal: ${d.real_probability}%\\nlumora.vercel.app').then(()=>toast('Copied!'))">Copy Result</button><button class="bo" onclick="document.getElementById('imgRes').style.display='none';document.getElementById('ipw').style.display='none';imgF=null;scBtn.disabled=true;document.getElementById('iinfo').textContent='No file selected';">Scan Another</button></div></div>`;el.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>{const b=document.getElementById('cb');if(b)b.style.width=b.dataset.p+'%';},200);}
+  function processImageFile(file) {
+    if (file.size > 5 * 1024 * 1024) { showNotif('⚠ File too large. Max 5MB', 'var(--red)'); return; }
+    selectedFile = file;
+    const preview = document.getElementById('preview-img');
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = 'block';
+    showNotif('✓ Image loaded — click SCAN', 'var(--green)');
+  }
 
-function rCert(c){const el=document.getElementById('cRes');el.style.display='block';const s=c.writing_style;el.innerHTML=`<div class="cercard"><div class="certtop"><div class="cbrand">LUM<span>ORA</span><small>AI TRUST INFRASTRUCTURE</small></div><div class="cvb">✓ Human Authored — Verified</div></div><div class="certbi"><div style="font-family:var(--fm);font-size:9px;letter-spacing:.2em;color:var(--muted2);text-transform:uppercase;margin-bottom:6px;">Authorship Certificate</div><div class="cdoc">${esc(c.document_title)}</div><div class="cby">Authored by <strong>${esc(c.author_name)}</strong> · ${c.issued_date}</div><div class="cscores"><div class="csb"><div class="csbl">Trust Score</div><div class="csbv c">${c.trust_score}<span style="font-size:14px;opacity:.4">/100</span></div></div><div class="csb"><div class="csbl">Human Probability</div><div class="csbv g">${c.human_probability}%</div></div><div class="csb"><div class="csbl">Word Count</div><div class="csbv s">${c.word_count}</div></div><div class="csb"><div class="csbl">Verdict</div><div class="csbv s" style="color:var(--green);font-size:11px;">${c.verdict}</div></div></div><div class="styw"><div class="slbl">Writing Style Fingerprint</div><div class="sbr"><div class="sbt"><span>Vocabulary Richness</span><span>${s.vocab_richness}%</span></div><div class="sbtr"><div class="sbf" data-p="${Math.min(s.vocab_richness,100)}"></div></div></div><div class="sbr"><div class="sbt"><span>Sentence Complexity</span><span>~${s.avg_sentence_length} words/sentence</span></div><div class="sbtr"><div class="sbf" data-p="${Math.min((s.avg_sentence_length/40)*100,100)}"></div></div></div><div class="sbr"><div class="sbt"><span>Punctuation Variety</span><span>${s.punctuation_variety} marks</span></div><div class="sbtr"><div class="sbf" data-p="${Math.min((s.punctuation_variety/20)*100,100)}"></div></div></div></div><div class="cmt"><div class="cmr"><span>Certificate ID</span><span class="ch2">${c.certificate_id}</span></div><div class="cmr"><span>Content Hash</span><span class="ch2">${c.content_hash}</span></div><div class="cmr"><span>Issued At</span><span>${c.issued_at}</span></div><div class="cmr"><span>Model</span><span>${c.model_used}</span></div><div class="cmr"><span>Issuer</span><span>${c.issuer}</span></div></div><div class="ra" style="padding:0;margin-bottom:0;"><button class="bp bg" onclick="cpCert()">COPY CERTIFICATE</button><button class="bo" onclick="dlCert()">Download</button><button class="bo" onclick="rstCert()">New Certificate</button></div></div><div class="certbot"><div class="cft">Verify at <strong style="color:var(--cyan)">lumora.vercel.app</strong></div><div class="cid">${c.certificate_id}</div></div></div>`;el.scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>{el.querySelectorAll('.sbf').forEach(b=>b.style.width=b.dataset.p+'%');},200);}
+  async function analyzeImage() {
+    if (!selectedFile) { showNotif('⚠ Upload an image first', 'var(--red)'); return; }
+    const btn = document.getElementById('img-btn');
+    const loader = document.getElementById('img-loader');
+    const result = document.getElementById('img-result');
+    btn.disabled = true; loader.classList.add('show'); result.classList.remove('show');
+    const formData = new FormData();
+    formData.append('image', selectedFile);
+    try {
+      const res = await fetch(`${API_BASE}/detect-image`, { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      const isFake = (data.label || '').toLowerCase().includes('fake') || (data.label || '').toLowerCase().includes('deepfake');
+      const conf = Math.round((data.confidence || 0.5) * 100);
+      result.innerHTML = `
+        <div class="result-score ${isFake ? 'result-ai' : 'result-human'}">${isFake ? '⚠' : '✓'}</div>
+        <div class="result-label">${isFake ? 'DEEPFAKE DETECTED' : 'REAL IMAGE'}</div>
+        <div style="font-size:9px;letter-spacing:2px;color:var(--muted);margin-bottom:8px">CONFIDENCE: ${conf}%</div>
+        <div class="result-bar"><div class="result-bar-fill" style="width:${conf}%;background:${isFake?'var(--red)':'var(--green)'}"></div></div>
+      `;
+      result.classList.add('show');
+    } catch (err) {
+      result.innerHTML = `<div style="color:var(--red);font-size:11px">⚠ Error: ${err.message}</div>`;
+      result.classList.add('show');
+    } finally {
+      btn.disabled = false; loader.classList.remove('show');
+    }
+  }
 
-function rCertErr(d){const el=document.getElementById('cRes');el.style.display='block';el.innerHTML=`<div class="cerr"><div class="cerrt">⚠ CERTIFICATE DENIED</div><div class="cerrb">${d.reason||d.error}<br><br>Trust Score: <strong style="color:var(--yellow)">${d.trust_score||'—'}/100</strong> · AI Probability: <strong style="color:var(--red)">${d.ai_probability||'—'}%</strong><br><br>LUMORA only certifies content with Trust Score 60+.</div></div>`;el.scrollIntoView({behavior:'smooth',block:'start'});}
+  // ─── CERTIFICATE ───
+  async function generateCert() {
+    const name = document.getElementById('cert-name').value.trim();
+    const title = document.getElementById('cert-title').value.trim();
+    const text = document.getElementById('cert-text').value.trim();
+    if (!name || !title || text.length < 100) { showNotif('⚠ Fill all fields (min 100 chars)', 'var(--red)'); return; }
+    const btn = document.getElementById('cert-btn');
+    const loader = document.getElementById('cert-loader');
+    const result = document.getElementById('cert-result');
+    btn.disabled = true; loader.classList.add('show'); result.classList.remove('show');
+    try {
+      const res = await fetch(`${API_BASE}/generate-certificate`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, title, text })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      result.innerHTML = `
+        <div style="color:var(--green);font-size:11px;letter-spacing:2px;margin-bottom:12px">✓ CERTIFICATE GENERATED</div>
+        <div style="font-size:9px;letter-spacing:1px;color:var(--muted);line-height:2">
+          <div>CERT ID: <span style="color:var(--cyan)">${data.cert_id || 'LMR-' + Date.now()}</span></div>
+          <div>AUTHOR: <span style="color:var(--text)">${name}</span></div>
+          <div>DOCUMENT: <span style="color:var(--text)">${title}</span></div>
+          <div>FINGERPRINT: <span style="color:var(--cyan)">${data.fingerprint || 'FP-' + Math.random().toString(36).substr(2,12).toUpperCase()}</span></div>
+          <div>TIMESTAMP: <span style="color:var(--text)">${new Date().toISOString()}</span></div>
+        </div>
+      `;
+      result.classList.add('show');
+    } catch (err) {
+      result.innerHTML = `<div style="color:var(--red);font-size:11px">⚠ Error: ${err.message}</div>`;
+      result.classList.add('show');
+    } finally {
+      btn.disabled = false; loader.classList.remove('show');
+    }
+  }
 
-function cpRes(){if(!lScore)return;const v=lScore.trust>=70?'Human Written':lScore.trust>=40?'Mixed Signals':'AI Generated';navigator.clipboard.writeText(`LUMORA Trust Score: ${lScore.trust}/100\nVerdict: ${v}\nAI Probability: ${lScore.ai_probability}%\n\nlumora.vercel.app`).then(()=>toast('Copied!'));}
-function cpCert(){if(!lCert)return;navigator.clipboard.writeText(`LUMORA AUTHORSHIP CERTIFICATE\nID: ${lCert.certificate_id}\nDocument: ${lCert.document_title}\nAuthor: ${lCert.author_name}\nTrust: ${lCert.trust_score}/100\nVerdict: ${lCert.verdict}\nIssued: ${lCert.issued_at}\nlumora.vercel.app`).then(()=>toast('Certificate copied!'));}
-function dlRes(){if(!lScore)return;const v=lScore.trust>=70?'Human Written':lScore.trust>=40?'Mixed Signals':'AI Generated';dl(`LUMORA REPORT\n${'='.repeat(40)}\nTrust: ${lScore.trust}/100\nAI Prob: ${lScore.ai_probability}%\nVerdict: ${v}\n\nlumora.vercel.app`,`lumora-report-${Date.now()}.txt`);}
-function dlCert(){if(!lCert)return;dl(`LUMORA CERTIFICATE\nID: ${lCert.certificate_id}\nDoc: ${lCert.document_title}\nAuthor: ${lCert.author_name}\nIssued: ${lCert.issued_at}\nTrust: ${lCert.trust_score}/100\nVerdict: ${lCert.verdict}\nHash: ${lCert.content_hash}\nlumora.vercel.app`,`lumora-cert-${lCert.certificate_id}.txt`);}
-function dl(c,n){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:'text/plain'}));a.download=n;a.click();}
-function goToCert(){if(lText){cta.value=lText;ccc.textContent=`${lText.length} characters`;cBtn.disabled=lText.length<30;}document.querySelectorAll('.tbtn').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tsec').forEach(s=>s.classList.remove('active'));document.getElementById('tab-cert').classList.add('active');document.querySelectorAll('.tbtn')[2].classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
-function rstText(){document.getElementById('res').style.display='none';tIn.value='';cc.textContent='0 characters';aBtn.disabled=true;tIn.focus();window.scrollTo({top:0,behavior:'smooth'});}
-function rstCert(){document.getElementById('cRes').style.display='none';cta.value='';document.getElementById('aname').value='';document.getElementById('dtitle').value='';ccc.textContent='0 characters';cBtn.disabled=true;window.scrollTo({top:0,behavior:'smooth'});}
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+  // ─── FAQ ───
+  function toggleFaq(btn) {
+    const answer = btn.nextElementSibling;
+    const isOpen = btn.classList.contains('open');
+    document.querySelectorAll('.faq-q').forEach(q => {
+      q.classList.remove('open');
+      q.nextElementSibling.classList.remove('open');
+    });
+    if (!isOpen) { btn.classList.add('open'); answer.classList.add('open'); }
+  }
+
+  // ─── AUTH MODAL ───
+  function openAuth(tab) {
+    document.getElementById('auth-modal').classList.add('open');
+    switchTab(tab);
+  }
+
+  function closeAuth() {
+    document.getElementById('auth-modal').classList.remove('open');
+    document.getElementById('auth-success').style.display = 'none';
+    document.getElementById('login-form').style.display = 'block';
+    document.getElementById('signup-form').style.display = 'none';
+    switchTab('login');
+  }
+
+  function switchTab(tab) {
+    document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
+    document.getElementById('signup-form').style.display = tab === 'signup' ? 'block' : 'none';
+    document.getElementById('auth-success').style.display = 'none';
+    document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+    document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+  }
+
+  function handleLogin() {
+    const email = document.getElementById('login-email').value.trim();
+    const pass = document.getElementById('login-pass').value;
+    if (!email || !pass) { showNotif('⚠ Enter email and password', 'var(--red)'); return; }
+    const users = JSON.parse(localStorage.getItem('lumora_users') || '{}');
+    if (!users[email] || users[email].pass !== pass) {
+      showNotif('⚠ Invalid credentials', 'var(--red)'); return;
+    }
+    localStorage.setItem('lumora_current', JSON.stringify({ email, name: users[email].name }));
+    document.getElementById('login-form').style.display = 'none';
+    document.getElementById('success-msg').textContent = `WELCOME BACK, ${users[email].name.toUpperCase()}!`;
+    document.getElementById('auth-success').style.display = 'block';
+    setTimeout(closeAuth, 2000);
+    showNotif('✓ Logged in successfully', 'var(--green)');
+  }
+
+  function handleSignup() {
+    const name = document.getElementById('signup-name').value.trim();
+    const email = document.getElementById('signup-email').value.trim();
+    const pass = document.getElementById('signup-pass').value;
+    if (!name || !email || pass.length < 8) { showNotif('⚠ Fill all fields (min 8 char password)', 'var(--red)'); return; }
+    const users = JSON.parse(localStorage.getItem('lumora_users') || '{}');
+    if (users[email]) { showNotif('⚠ Account already exists', 'var(--red)'); return; }
+    users[email] = { name, pass };
+    localStorage.setItem('lumora_users', JSON.stringify(users));
+    localStorage.setItem('lumora_current', JSON.stringify({ email, name }));
+    document.getElementById('signup-form').style.display = 'none';
+    document.getElementById('success-msg').textContent = `WELCOME TO LUMORA, ${name.toUpperCase()}!`;
+    document.getElementById('auth-success').style.display = 'block';
+    setTimeout(closeAuth, 2000);
+    showNotif('✓ Account created!', 'var(--green)');
+  }
+
+  // Close on overlay click
+  document.getElementById('auth-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeAuth();
+  });
+
+  // ─── WAITLIST ───
+  function openWaitlist(plan) {
+    document.getElementById('waitlist-plan-label').textContent = plan.toUpperCase() + ' PLAN';
+    document.getElementById('wl-success').style.display = 'none';
+    document.getElementById('wl-name').style.display = '';
+    document.getElementById('wl-email').style.display = '';
+    document.querySelector('[onclick="submitWaitlist()"]').style.display = '';
+    document.querySelector('.modal-sub', document.getElementById('waitlist-modal')).style.display = '';
+    document.getElementById('waitlist-modal').classList.add('open');
+  }
+
+  function closeWaitlist() {
+    document.getElementById('waitlist-modal').classList.remove('open');
+  }
+
+  function submitWaitlist() {
+    const name = document.getElementById('wl-name').value.trim();
+    const email = document.getElementById('wl-email').value.trim();
+    if (!name || !email) { showNotif('⚠ Enter name and email', 'var(--red)'); return; }
+    const plan = document.getElementById('waitlist-plan-label').textContent;
+    const waitlist = JSON.parse(localStorage.getItem('lumora_waitlist') || '[]');
+    waitlist.push({ name, email, plan, date: new Date().toISOString() });
+    localStorage.setItem('lumora_waitlist', JSON.stringify(waitlist));
+    document.getElementById('wl-name').style.display = 'none';
+    document.getElementById('wl-email').style.display = 'none';
+    document.querySelector('[onclick="submitWaitlist()"]').style.display = 'none';
+    document.getElementById('wl-success').style.display = 'block';
+    showNotif('🎯 You\'re on the waitlist!', 'var(--cyan)');
+    setTimeout(closeWaitlist, 3000);
+  }
+
+  document.getElementById('waitlist-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeWaitlist();
+  });
 </script>
 </body>
 </html>
