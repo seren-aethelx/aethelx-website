@@ -4,957 +4,20 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AETHELX — AI Trust Infrastructure</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
-<style>
-  :root {
-    --bg: #03030a;
-    --bg2: #07071a;
-    --cyan: #00e5ff;
-    --cyan2: #00b8d4;
-    --green: #00ff9d;
-    --red: #ff3d71;
-    --purple: #7b2fff;
-    --text: #e0e0e0;
-    --muted: #556;
-    --border: rgba(0,229,255,0.12);
-    --glass: rgba(0,229,255,0.04);
-    --card: rgba(7,7,26,0.85);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ─── GRID BG ─── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  /* ─── NAV ─── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 18px 40px;
-    background: rgba(3,3,10,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 4px;
-    color: var(--cyan);
-    text-shadow: 0 0 20px rgba(0,229,255,0.5);
-    text-decoration: none;
-  }
-
-  .nav-badge {
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: var(--green);
-    border: 1px solid var(--green);
-    padding: 2px 8px;
-    border-radius: 20px;
-    margin-left: 10px;
-    vertical-align: middle;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%,100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 30px;
-    align-items: center;
-    list-style: none;
-  }
-
-  .nav-links a {
-    color: var(--muted);
-    text-decoration: none;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    transition: color 0.3s;
-  }
-
-  .nav-links a:hover { color: var(--cyan); }
-
-  .nav-auth {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-
-  .btn-login {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-    padding: 8px 20px;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-transform: uppercase;
-  }
-
-  .btn-login:hover {
-    border-color: var(--cyan);
-    color: var(--cyan);
-  }
-
-  .btn-signup {
-    background: var(--cyan);
-    border: none;
-    color: #000;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    padding: 8px 20px;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-  }
-
-  .btn-signup:hover {
-    background: var(--green);
-    transform: translateY(-1px);
-  }
-
-  /* ─── HERO ─── */
-  .hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 120px 40px 80px;
-    z-index: 1;
-  }
-
-  .hero-tag {
-    font-size: 10px;
-    letter-spacing: 5px;
-    color: var(--cyan);
-    text-transform: uppercase;
-    margin-bottom: 24px;
-    opacity: 0.7;
-  }
-
-  .hero h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(56px, 10vw, 120px);
-    line-height: 0.9;
-    letter-spacing: 6px;
-    color: #fff;
-    text-shadow: 0 0 60px rgba(0,229,255,0.2);
-    margin-bottom: 12px;
-  }
-
-  .hero h1 span { color: var(--cyan); }
-
-  .hero-sub {
-    font-size: 13px;
-    letter-spacing: 2px;
-    color: var(--muted);
-    max-width: 480px;
-    line-height: 1.8;
-    margin-bottom: 50px;
-  }
-
-  .hero-stats {
-    display: flex;
-    gap: 60px;
-    justify-content: center;
-    margin-bottom: 50px;
-  }
-
-  .stat { text-align: center; }
-
-  .stat-val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 36px;
-    color: var(--cyan);
-    display: block;
-  }
-
-  .stat-label {
-    font-size: 9px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
-  .hero-cta {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .cta-primary {
-    background: var(--cyan);
-    color: #000;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 3px;
-    padding: 14px 36px;
-    border: none;
-    cursor: pointer;
-    text-transform: uppercase;
-    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
-    transition: all 0.3s;
-    text-decoration: none;
-    display: inline-block;
-  }
-
-  .cta-primary:hover { background: var(--green); transform: translateY(-2px); }
-
-  .cta-secondary {
-    background: transparent;
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 3px;
-    padding: 14px 36px;
-    border: 1px solid var(--border);
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: all 0.3s;
-    text-decoration: none;
-    display: inline-block;
-  }
-
-  .cta-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
-
-  /* ─── SECTION COMMON ─── */
-  section {
-    position: relative;
-    z-index: 1;
-    padding: 100px 40px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .section-tag {
-    font-size: 9px;
-    letter-spacing: 5px;
-    color: var(--cyan);
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(36px, 5vw, 64px);
-    letter-spacing: 4px;
-    color: #fff;
-    margin-bottom: 16px;
-  }
-
-  .section-sub {
-    font-size: 12px;
-    letter-spacing: 1px;
-    color: var(--muted);
-    line-height: 1.8;
-    max-width: 500px;
-    margin-bottom: 60px;
-  }
-
-  /* ─── TOOLS ─── */
-  .tools-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 24px;
-  }
-
-  .tool-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    padding: 36px;
-    backdrop-filter: blur(10px);
-    transition: border-color 0.3s, transform 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .tool-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .tool-card:hover { border-color: rgba(0,229,255,0.3); transform: translateY(-4px); }
-  .tool-card:hover::before { opacity: 1; }
-
-  .tool-icon {
-    font-size: 28px;
-    margin-bottom: 16px;
-    display: block;
-  }
-
-  .tool-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 3px;
-    color: var(--cyan);
-    margin-bottom: 8px;
-  }
-
-  .tool-model {
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: var(--muted);
-    margin-bottom: 20px;
-    text-transform: uppercase;
-  }
-
-  textarea, input[type="text"] {
-    width: 100%;
-    background: rgba(0,0,0,0.4);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    padding: 14px;
-    resize: vertical;
-    transition: border-color 0.3s;
-    outline: none;
-    min-height: 120px;
-  }
-
-  textarea:focus, input[type="text"]:focus { border-color: var(--cyan); }
-
-  input[type="text"] { min-height: unset; height: 44px; resize: none; }
-
-  .char-count {
-    font-size: 9px;
-    letter-spacing: 2px;
-    color: var(--muted);
-    margin: 8px 0;
-    text-align: right;
-  }
-
-  .btn-action {
-    width: 100%;
-    background: transparent;
-    border: 1px solid var(--cyan);
-    color: var(--cyan);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    padding: 12px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: all 0.3s;
-    margin-top: 12px;
-  }
-
-  .btn-action:hover { background: var(--cyan); color: #000; }
-  .btn-action:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  .result-box {
-    margin-top: 20px;
-    padding: 16px;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid var(--border);
-    display: none;
-    font-size: 11px;
-    line-height: 1.8;
-    color: var(--text);
-  }
-
-  .result-box.show { display: block; }
-
-  .result-score {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 48px;
-    text-align: center;
-    padding: 10px 0;
-  }
-
-  .result-ai { color: var(--red); }
-  .result-human { color: var(--green); }
-
-  .result-label {
-    text-align: center;
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
-  }
-
-  .result-bar {
-    height: 4px;
-    background: rgba(255,255,255,0.1);
-    margin: 8px 0;
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .result-bar-fill {
-    height: 100%;
-    background: var(--cyan);
-    transition: width 0.8s ease;
-  }
-
-  .drop-zone {
-    border: 1px dashed var(--border);
-    padding: 40px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.3s, background 0.3s;
-    background: rgba(0,0,0,0.2);
-  }
-
-  .drop-zone:hover, .drop-zone.drag-over {
-    border-color: var(--cyan);
-    background: rgba(0,229,255,0.03);
-  }
-
-  .drop-zone input[type="file"] { display: none; }
-
-  .drop-text { font-size: 11px; color: var(--muted); letter-spacing: 1px; line-height: 2; }
-
-  #preview-img {
-    max-width: 100%;
-    margin-top: 16px;
-    border: 1px solid var(--border);
-    display: none;
-  }
-
-  /* ─── PRICING ─── */
-  #pricing { max-width: 1200px; }
-
-  .pricing-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    background: var(--border);
-    margin-bottom: 60px;
-  }
-
-  @media (max-width: 768px) {
-    .pricing-grid { grid-template-columns: 1fr; }
-    nav { padding: 16px 20px; }
-    .nav-links { display: none; }
-  }
-
-  .pricing-card {
-    background: var(--bg);
-    padding: 48px 36px;
-    position: relative;
-    transition: background 0.3s;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .pricing-card:hover { background: var(--bg2); }
-
-  .pricing-card.featured {
-    background: var(--bg2);
-    border-top: 2px solid var(--cyan);
-  }
-
-  .plan-badge {
-    position: absolute;
-    top: -1px;
-    right: 24px;
-    background: var(--cyan);
-    color: #000;
-    font-size: 8px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    padding: 4px 12px;
-    text-transform: uppercase;
-  }
-
-  .plan-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 13px;
-    letter-spacing: 5px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 24px;
-  }
-
-  .plan-price {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 72px;
-    line-height: 1;
-    color: #fff;
-    margin-bottom: 4px;
-  }
-
-  .plan-price sup {
-    font-size: 24px;
-    vertical-align: top;
-    margin-top: 16px;
-    display: inline-block;
-    color: var(--muted);
-  }
-
-  .plan-price .coming {
-    font-size: 28px;
-    color: var(--cyan);
-    letter-spacing: 2px;
-  }
-
-  .plan-period {
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--muted);
-    margin-bottom: 36px;
-    text-transform: uppercase;
-  }
-
-  .plan-features {
-    list-style: none;
-    margin-bottom: 40px;
-    flex: 1;
-  }
-
-  .plan-features li {
-    font-size: 11px;
-    letter-spacing: 1px;
-    color: var(--text);
-    padding: 10px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    line-height: 1.5;
-  }
-
-  .plan-features li .check { color: var(--green); font-size: 12px; flex-shrink: 0; }
-  .plan-features li .cross { color: var(--muted); font-size: 12px; flex-shrink: 0; }
-  .plan-features li.muted { color: var(--muted); }
-
-  .btn-plan {
-    width: 100%;
-    padding: 14px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: none;
-  }
-
-  .btn-plan-free {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--muted);
-  }
-
-  .btn-plan-free:hover { border-color: var(--cyan); color: var(--cyan); }
-
-  .btn-plan-pro {
-    background: var(--cyan);
-    color: #000;
-  }
-
-  .btn-plan-pro:hover { background: var(--green); transform: translateY(-2px); }
-
-  .btn-plan-elite {
-    background: transparent;
-    border: 1px solid var(--purple);
-    color: var(--purple);
-  }
-
-  .btn-plan-elite:hover { background: var(--purple); color: #fff; }
-
-  .pricing-note {
-    text-align: center;
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--muted);
-    margin-bottom: 60px;
-  }
-
-  .pricing-note span {
-    color: var(--cyan);
-    border: 1px solid rgba(0,229,255,0.3);
-    padding: 2px 10px;
-    margin: 0 4px;
-  }
-
-  /* ─── FAQ ─── */
-  .faq-list { max-width: 720px; }
-
-  .faq-item {
-    border-bottom: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  .faq-q {
-    width: 100%;
-    background: none;
-    border: none;
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 1px;
-    padding: 20px 0;
-    text-align: left;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: color 0.3s;
-  }
-
-  .faq-q:hover { color: var(--cyan); }
-
-  .faq-q .arrow {
-    font-size: 16px;
-    transition: transform 0.3s;
-    color: var(--cyan);
-  }
-
-  .faq-q.open .arrow { transform: rotate(45deg); }
-
-  .faq-a {
-    max-height: 0;
-    overflow: hidden;
-    font-size: 11px;
-    color: var(--muted);
-    line-height: 1.9;
-    letter-spacing: 0.5px;
-    transition: max-height 0.4s ease, padding 0.3s;
-  }
-
-  .faq-a.open { max-height: 200px; padding-bottom: 20px; }
-
-  /* ─── TRUST ─── */
-  .trust-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1px;
-    background: var(--border);
-  }
-
-  .trust-item {
-    background: var(--bg);
-    padding: 40px 30px;
-    text-align: center;
-  }
-
-  .trust-icon { font-size: 28px; margin-bottom: 16px; display: block; }
-  .trust-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 16px;
-    letter-spacing: 3px;
-    color: var(--cyan);
-    margin-bottom: 8px;
-  }
-  .trust-desc { font-size: 10px; letter-spacing: 1px; color: var(--muted); line-height: 1.8; }
-
-  /* ─── AUTH MODAL ─── */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
-    z-index: 999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-  }
-
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-
-  .modal {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    padding: 48px;
-    width: 100%;
-    max-width: 440px;
-    position: relative;
-    transform: translateY(20px);
-    transition: transform 0.3s;
-  }
-
-  .modal-overlay.open .modal { transform: translateY(0); }
-
-  .modal-close {
-    position: absolute;
-    top: 16px; right: 20px;
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-size: 20px;
-    cursor: pointer;
-    font-family: 'JetBrains Mono', monospace;
-    transition: color 0.3s;
-  }
-
-  .modal-close:hover { color: var(--red); }
-
-  .modal-tabs {
-    display: flex;
-    gap: 0;
-    margin-bottom: 36px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .modal-tab {
-    flex: 1;
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 3px;
-    padding: 12px;
-    cursor: pointer;
-    text-transform: uppercase;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: all 0.3s;
-  }
-
-  .modal-tab.active { color: var(--cyan); border-bottom-color: var(--cyan); }
-
-  .modal-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    letter-spacing: 4px;
-    color: #fff;
-    margin-bottom: 8px;
-  }
-
-  .modal-sub {
-    font-size: 10px;
-    letter-spacing: 1px;
-    color: var(--muted);
-    margin-bottom: 30px;
-    line-height: 1.8;
-  }
-
-  .form-field {
-    margin-bottom: 16px;
-  }
-
-  .form-label {
-    display: block;
-    font-size: 9px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .form-input {
-    width: 100%;
-    background: rgba(0,0,0,0.4);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    padding: 12px 14px;
-    outline: none;
-    transition: border-color 0.3s;
-    height: 44px;
-    min-height: unset;
-    resize: none;
-  }
-
-  .form-input:focus { border-color: var(--cyan); }
-
-  .btn-auth {
-    width: 100%;
-    background: var(--cyan);
-    color: #000;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    padding: 14px;
-    border: none;
-    cursor: pointer;
-    text-transform: uppercase;
-    margin-top: 24px;
-    transition: all 0.3s;
-    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
-  }
-
-  .btn-auth:hover { background: var(--green); }
-
-  .form-alt {
-    text-align: center;
-    font-size: 10px;
-    letter-spacing: 1px;
-    color: var(--muted);
-    margin-top: 20px;
-  }
-
-  .form-alt a {
-    color: var(--cyan);
-    cursor: pointer;
-    text-decoration: none;
-  }
-
-  .auth-success {
-    text-align: center;
-    padding: 20px;
-    display: none;
-  }
-
-  .auth-success .big { font-size: 48px; margin-bottom: 16px; display: block; }
-  .auth-success p { font-size: 11px; letter-spacing: 2px; color: var(--green); }
-
-  /* ─── WAITLIST MODAL ─── */
-  .waitlist-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
-    z-index: 998;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-  }
-
-  .waitlist-overlay.open { opacity: 1; pointer-events: all; }
-
-  .waitlist-box {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-top: 2px solid var(--cyan);
-    padding: 48px;
-    width: 100%;
-    max-width: 420px;
-    position: relative;
-    transform: scale(0.95);
-    transition: transform 0.3s;
-  }
-
-  .waitlist-overlay.open .waitlist-box { transform: scale(1); }
-
-  .waitlist-plan-name {
-    font-size: 9px;
-    letter-spacing: 4px;
-    color: var(--cyan);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  /* ─── FOOTER ─── */
-  footer {
-    position: relative;
-    z-index: 1;
-    border-top: 1px solid var(--border);
-    padding: 40px;
-    text-align: center;
-    font-size: 10px;
-    letter-spacing: 2px;
-    color: var(--muted);
-  }
-
-  footer a { color: var(--cyan); text-decoration: none; margin: 0 12px; }
-  footer a:hover { color: var(--green); }
-
-  /* ─── LOADER ─── */
-  .loader {
-    display: none;
-    text-align: center;
-    padding: 20px;
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--cyan);
-    animation: blink 1s infinite;
-  }
-
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-  .loader.show { display: block; }
-
-  /* ─── SCROLL REVEAL ─── */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  /* ─── NOTIFICATION ─── */
-  .notif {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background: var(--bg2);
-    border: 1px solid var(--cyan);
-    color: var(--cyan);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 2px;
-    padding: 14px 24px;
-    z-index: 9999;
-    transform: translateY(80px);
-    opacity: 0;
-    transition: all 0.4s;
-  }
-
-  .notif.show { transform: translateY(0); opacity: 1; }
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <div>
-    <a href="#" class="nav-logo">AETHELX</a>
+    <a href="index.html" class="nav-logo">AETHELX</a>
     <span class="nav-badge">LIVE</span>
   </div>
   <ul class="nav-links">
-    <li><a href="#tools">Verify</a></li>
-    <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#about">About</a></li>
+    <li><a href="index.html#tools" class="active">Verify</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="index.html#about">About</a></li>
   </ul>
   <div class="nav-auth">
     <button class="btn-login" onclick="openAuth('login')">Login</button>
@@ -962,14 +25,13 @@
   </div>
 </nav>
 
-<!-- HERO -->
 <div class="hero">
   <p class="hero-tag">// Beta v0.3 — AI Trust Infrastructure</p>
   <h1>THE WORLD<br>NEEDS <span>TRUTH.</span></h1>
   <p class="hero-sub">AI is everywhere. Fakes are everywhere. AETHELX is the verification layer that separates real from artificial — for text, images, and human identity.</p>
   <div class="hero-stats">
     <div class="stat"><span class="stat-val">3</span><span class="stat-label">AI Models</span></div>
-    <div class="stat"><span class="stat-val">99%</span><span class="stat-label">Accuracy</span></div>
+    <div class="stat"><span class="stat-val">Beta</span><span class="stat-label">Accuracy Stage</span></div>
     <div class="stat"><span class="stat-val">0ms</span><span class="stat-label">Signup Needed</span></div>
   </div>
   <div class="hero-cta">
@@ -978,57 +40,33 @@
   </div>
 </div>
 
-<!-- TOOLS -->
+<!-- TOOLS OVERVIEW — links to separate pages -->
 <section id="tools">
   <div class="reveal">
     <p class="section-tag">// Choose Verification Mode</p>
     <h2 class="section-title">VERIFY NOW</h2>
-    <p class="section-sub">No signup. No data stored. AI-powered verification in seconds.</p>
+    <p class="section-sub">No signup. No data stored. Pick a tool below — each one opens on its own page.</p>
   </div>
 
-  <div class="tools-grid">
-
-    <!-- TEXT AI DETECTION -->
-    <div class="tool-card reveal">
+  <div class="tools-nav-grid">
+    <a href="text-detector.html" class="tools-nav-card reveal">
       <span class="tool-icon">⚡</span>
       <div class="tool-name">AI Text Detection</div>
-      <div class="tool-model">chatgpt-detector-roberta</div>
-      <textarea id="text-input" placeholder="Paste text here to analyze..." oninput="updateChar(this,'text-char')"></textarea>
-      <div class="char-count"><span id="text-char">0</span> characters</div>
-      <button class="btn-action" id="text-btn" onclick="analyzeText()">ANALYZE →</button>
-      <div class="loader" id="text-loader">SCANNING SIGNALS...</div>
-      <div class="result-box" id="text-result"></div>
-    </div>
-
-    <!-- DEEPFAKE DETECTION -->
-    <div class="tool-card reveal">
+      <p>Paste any text and check whether it was likely written by AI or a human.</p>
+      <span class="go">Open tool →</span>
+    </a>
+    <a href="image-detector.html" class="tools-nav-card reveal">
       <span class="tool-icon">🔍</span>
       <div class="tool-name">Deepfake Detection</div>
-      <div class="tool-model">deepfake_vs_real_image_detection</div>
-      <div class="drop-zone" id="drop-zone" onclick="document.getElementById('img-input').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
-        <input type="file" id="img-input" accept="image/*" onchange="fileSelected(event)" />
-        <div class="drop-text">DROP IMAGE HERE<br><small>JPG · PNG · WEBP · Max 5MB</small></div>
-      </div>
-      <img id="preview-img" />
-      <button class="btn-action" id="img-btn" onclick="analyzeImage()">SCAN IMAGE →</button>
-      <div class="loader" id="img-loader">SCANNING FOR DEEPFAKE PATTERNS...</div>
-      <div class="result-box" id="img-result"></div>
-    </div>
-
-    <!-- AUTHORSHIP CERTIFICATE -->
-    <div class="tool-card reveal">
+      <p>Upload an image to scan it for signs of AI generation or manipulation.</p>
+      <span class="go">Open tool →</span>
+    </a>
+    <a href="certificate.html" class="tools-nav-card reveal">
       <span class="tool-icon">🔒</span>
       <div class="tool-name">Authorship Certificate</div>
-      <div class="tool-model">Human Verification Engine</div>
-      <input type="text" id="cert-name" placeholder="Your Name" class="form-input" style="margin-bottom:10px;min-height:unset;height:44px" />
-      <input type="text" id="cert-title" placeholder="Document Title" class="form-input" style="margin-bottom:10px;min-height:unset;height:44px" />
-      <textarea id="cert-text" placeholder="Your writing to certify..." oninput="updateChar(this,'cert-char')"></textarea>
-      <div class="char-count"><span id="cert-char">0</span> characters</div>
-      <button class="btn-action" id="cert-btn" onclick="generateCert()">GENERATE CERTIFICATE →</button>
-      <div class="loader" id="cert-loader">VERIFYING AUTHORSHIP...</div>
-      <div class="result-box" id="cert-result"></div>
-    </div>
-
+      <p>Generate a timestamped certificate proving you authored a piece of writing.</p>
+      <span class="go">Open tool →</span>
+    </a>
   </div>
 </section>
 
@@ -1053,7 +91,7 @@
     <div class="trust-item">
       <span class="trust-icon">🤖</span>
       <div class="trust-title">Open AI Models</div>
-      <div class="trust-desc">Powered by state-of-the-art open-source detection models.</div>
+      <div class="trust-desc">Powered by open-source detection models, transparently labeled as beta.</div>
     </div>
   </div>
 </section>
@@ -1068,8 +106,6 @@
     </div>
 
     <div class="pricing-grid reveal">
-
-      <!-- FREE -->
       <div class="pricing-card">
         <div class="plan-name">Free</div>
         <div class="plan-price">₹0</div>
@@ -1085,7 +121,6 @@
         <button class="btn-plan btn-plan-free" onclick="openWaitlist('Free')">GET STARTED →</button>
       </div>
 
-      <!-- PRO -->
       <div class="pricing-card featured">
         <div class="plan-badge">Most Popular</div>
         <div class="plan-name">Pro</div>
@@ -1102,7 +137,6 @@
         <button class="btn-plan btn-plan-pro" onclick="openWaitlist('Pro')">JOIN WAITLIST →</button>
       </div>
 
-      <!-- ELITE -->
       <div class="pricing-card">
         <div class="plan-name">Elite</div>
         <div class="plan-price"><span class="coming" style="color:var(--purple)">COMING SOON</span></div>
@@ -1117,7 +151,6 @@
         </ul>
         <button class="btn-plan btn-plan-elite" onclick="openWaitlist('Elite')">CONTACT US →</button>
       </div>
-
     </div>
 
     <div class="pricing-note reveal">
@@ -1125,43 +158,27 @@
       <span>Razorpay Integration</span> coming Q3 2026
     </div>
 
-    <!-- FAQ -->
     <div class="reveal">
       <p class="section-tag" style="margin-bottom:24px">// Common Questions</p>
       <div class="faq-list">
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Is the free plan really free forever?
-            <span class="arrow">+</span>
-          </button>
+          <button class="faq-q" onclick="toggleFaq(this)">Is the free plan really free forever?<span class="arrow">+</span></button>
           <div class="faq-a">Yes. The free tier will always exist. We believe verification should be accessible to everyone. Paid plans unlock higher limits and API access for power users and businesses.</div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            When will payments go live?
-            <span class="arrow">+</span>
-          </button>
+          <button class="faq-q" onclick="toggleFaq(this)">How accurate is the detection?<span class="arrow">+</span></button>
+          <div class="faq-a">We're upfront about this: our current models are in beta and typically 60–80% accurate, especially against the newest AI writing styles. Treat results as one signal, not a final verdict. We're actively working on improving accuracy.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">When will payments go live?<span class="arrow">+</span></button>
           <div class="faq-a">We're integrating Razorpay and targeting Q3 2026 for paid plan launch. Join the waitlist now to lock your early-bird pricing — waitlist members get up to 40% off.</div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Is my data safe? Do you store anything?
-            <span class="arrow">+</span>
-          </button>
+          <button class="faq-q" onclick="toggleFaq(this)">Is my data safe? Do you store anything?<span class="arrow">+</span></button>
           <div class="faq-a">Zero storage. Your text and images are processed in real-time by our AI models and immediately discarded. We never store, log, or analyze your content beyond the immediate verification request.</div>
         </div>
         <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            Can I use AETHELX for my business?
-            <span class="arrow">+</span>
-          </button>
-          <div class="faq-a">Absolutely. The Elite plan is designed for enterprise use cases — bulk verification, API integration, white-label certificates, and dedicated support. Contact us to discuss custom needs.</div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-q" onclick="toggleFaq(this)">
-            What is an authorship certificate?
-            <span class="arrow">+</span>
-          </button>
+          <button class="faq-q" onclick="toggleFaq(this)">What is an authorship certificate?<span class="arrow">+</span></button>
           <div class="faq-a">A cryptographically unique document that proves you wrote a piece of text at a specific time. It includes a unique ID, writing fingerprint analysis, and timestamp — useful for journalists, academics, and creators.</div>
         </div>
       </div>
@@ -1169,17 +186,16 @@
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;color:var(--cyan);margin-bottom:16px;">AETHELX</div>
   <div style="margin-bottom:16px;">
-    <a href="#tools">Verify</a>
-    <a href="#pricing">Pricing</a>
-    <a href="#about">About</a>
-    <a href="mailto:AETHELX@support.com">Contact</a>
+    <a href="index.html#tools">Verify</a>
+    <a href="index.html#pricing">Pricing</a>
+    <a href="index.html#about">About</a>
+    <a href="mailto:hello@aethelx.com">Contact</a>
   </div>
   AETHELX © 2026 — AI Trust Infrastructure<br>
-  <span style="color:rgba(85,85,102,0.5)">Built to solve the global truth crisis.</span>
+  <span style="color:rgba(138,143,163,0.6)">Built to solve the global truth crisis.</span>
 </footer>
 
 <!-- AUTH MODAL -->
@@ -1190,44 +206,23 @@
       <button class="modal-tab active" id="tab-login" onclick="switchTab('login')">LOGIN</button>
       <button class="modal-tab" id="tab-signup" onclick="switchTab('signup')">SIGN UP</button>
     </div>
-
-    <!-- LOGIN FORM -->
     <div id="login-form">
       <div class="modal-title">WELCOME BACK</div>
       <div class="modal-sub">Sign in to access your verification history and API keys.</div>
-      <div class="form-field">
-        <label class="form-label">Email</label>
-        <input type="email" class="form-input" id="login-email" placeholder="you@domain.com" />
-      </div>
-      <div class="form-field">
-        <label class="form-label">Password</label>
-        <input type="password" class="form-input" id="login-pass" placeholder="••••••••" />
-      </div>
+      <div class="form-field"><label class="form-label">Email</label><input type="email" id="login-email" placeholder="you@domain.com" /></div>
+      <div class="form-field"><label class="form-label">Password</label><input type="password" id="login-pass" placeholder="••••••••" /></div>
       <button class="btn-auth" onclick="handleLogin()">LOGIN →</button>
       <div class="form-alt">No account? <a onclick="switchTab('signup')">Sign up free</a></div>
     </div>
-
-    <!-- SIGNUP FORM -->
     <div id="signup-form" style="display:none">
       <div class="modal-title">JOIN AETHELX</div>
       <div class="modal-sub">Create your free account. No credit card required.</div>
-      <div class="form-field">
-        <label class="form-label">Full Name</label>
-        <input type="text" class="form-input" id="signup-name" placeholder="Seren Patil" />
-      </div>
-      <div class="form-field">
-        <label class="form-label">Email</label>
-        <input type="email" class="form-input" id="signup-email" placeholder="you@domain.com" />
-      </div>
-      <div class="form-field">
-        <label class="form-label">Password</label>
-        <input type="password" class="form-input" id="signup-pass" placeholder="Min 8 characters" />
-      </div>
+      <div class="form-field"><label class="form-label">Full Name</label><input type="text" id="signup-name" placeholder="Seren Patil" /></div>
+      <div class="form-field"><label class="form-label">Email</label><input type="email" id="signup-email" placeholder="you@domain.com" /></div>
+      <div class="form-field"><label class="form-label">Password</label><input type="password" id="signup-pass" placeholder="Min 8 characters" /></div>
       <button class="btn-auth" onclick="handleSignup()">CREATE ACCOUNT →</button>
       <div class="form-alt">Have an account? <a onclick="switchTab('login')">Login</a></div>
     </div>
-
-    <!-- SUCCESS -->
     <div class="auth-success" id="auth-success">
       <span class="big">✅</span>
       <p id="success-msg">ACCOUNT CREATED — WELCOME TO AETHELX</p>
@@ -1242,280 +237,19 @@
     <div class="waitlist-plan-name" id="waitlist-plan-label">PRO PLAN</div>
     <div class="modal-title">JOIN WAITLIST</div>
     <div class="modal-sub">Payments open Q3 2026. Join now to lock early-bird pricing — up to 40% off.</div>
-    <div class="form-field">
-      <label class="form-label">Your Name</label>
-      <input type="text" class="form-input" id="wl-name" placeholder="Your name" />
-    </div>
-    <div class="form-field">
-      <label class="form-label">Email</label>
-      <input type="email" class="form-input" id="wl-email" placeholder="you@domain.com" />
-    </div>
+    <div class="form-field"><label class="form-label">Your Name</label><input type="text" id="wl-name" placeholder="Your name" /></div>
+    <div class="form-field"><label class="form-label">Email</label><input type="email" id="wl-email" placeholder="you@domain.com" /></div>
     <button class="btn-auth" onclick="submitWaitlist()">LOCK MY SPOT →</button>
     <div id="wl-success" style="display:none;text-align:center;padding:20px">
       <div style="font-size:40px;margin-bottom:12px">🎯</div>
-      <div style="color:var(--green);font-size:11px;letter-spacing:2px">YOU'RE ON THE LIST!</div>
-      <div style="color:var(--muted);font-size:10px;margin-top:8px">We'll notify you when payments go live.</div>
+      <div style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px">YOU'RE ON THE LIST!</div>
+      <div style="color:var(--muted);font-size:12px;margin-top:8px">We'll notify you when payments go live.</div>
     </div>
   </div>
 </div>
 
-<!-- NOTIFICATION -->
 <div class="notif" id="notif"></div>
 
-<script>
-  const API_BASE = 'https://aggnes99-lumora-backend.hf.space';
-
-  // ─── UTILS ───
-  function updateChar(el, id) {
-    document.getElementById(id).textContent = el.value.length;
-  }
-
-  function showNotif(msg, color = 'var(--cyan)') {
-    const n = document.getElementById('notif');
-    n.textContent = msg;
-    n.style.borderColor = color;
-    n.style.color = color;
-    n.classList.add('show');
-    setTimeout(() => n.classList.remove('show'), 3000);
-  }
-
-  // ─── SCROLL REVEAL ───
-  const revealEls = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.1 });
-  revealEls.forEach(el => observer.observe(el));
-
-  // ─── TEXT ANALYSIS ───
-  async function analyzeText() {
-    const text = document.getElementById('text-input').value.trim();
-    if (text.length < 50) { showNotif('⚠ Enter at least 50 characters', 'var(--red)'); return; }
-    const btn = document.getElementById('text-btn');
-    const loader = document.getElementById('text-loader');
-    const result = document.getElementById('text-result');
-    btn.disabled = true; loader.classList.add('show'); result.classList.remove('show');
-    try {
-      const res = await fetch(`${API_BASE}/detect-text`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text })
-      });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      const score = Math.round((data.ai_probability || 0) * 100);
-      const isAI = score > 50;
-      result.innerHTML = `
-        <div class="result-score ${isAI ? 'result-ai' : 'result-human'}">${score}%</div>
-        <div class="result-label">${isAI ? '⚠ AI GENERATED' : '✓ LIKELY HUMAN'}</div>
-        <div style="font-size:9px;letter-spacing:2px;color:var(--muted);margin-bottom:8px">AI PROBABILITY</div>
-        <div class="result-bar"><div class="result-bar-fill" style="width:${score}%;background:${isAI?'var(--red)':'var(--green)'}"></div></div>
-        ${data.details ? `<div style="margin-top:12px;font-size:10px;color:var(--muted)">${data.details}</div>` : ''}
-      `;
-      result.classList.add('show');
-    } catch (err) {
-      result.innerHTML = `<div style="color:var(--red);font-size:11px">⚠ Error: ${err.message}</div>`;
-      result.classList.add('show');
-    } finally {
-      btn.disabled = false; loader.classList.remove('show');
-    }
-  }
-
-  // ─── IMAGE / DEEPFAKE ───
-  let selectedFile = null;
-
-  function dragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('drag-over'); }
-  function dragLeave(e) { document.getElementById('drop-zone').classList.remove('drag-over'); }
-
-  function dropFile(e) {
-    e.preventDefault();
-    document.getElementById('drop-zone').classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file) processImageFile(file);
-  }
-
-  function fileSelected(e) {
-    const file = e.target.files[0];
-    if (file) processImageFile(file);
-  }
-
-  function processImageFile(file) {
-    if (file.size > 5 * 1024 * 1024) { showNotif('⚠ File too large. Max 5MB', 'var(--red)'); return; }
-    selectedFile = file;
-    const preview = document.getElementById('preview-img');
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = 'block';
-    showNotif('✓ Image loaded — click SCAN', 'var(--green)');
-  }
-
-  async function analyzeImage() {
-    if (!selectedFile) { showNotif('⚠ Upload an image first', 'var(--red)'); return; }
-    const btn = document.getElementById('img-btn');
-    const loader = document.getElementById('img-loader');
-    const result = document.getElementById('img-result');
-    btn.disabled = true; loader.classList.add('show'); result.classList.remove('show');
-    const formData = new FormData();
-    formData.append('image', selectedFile);
-    try {
-      const res = await fetch(`${API_BASE}/detect-image`, { method: 'POST', body: formData });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      const isFake = (data.label || '').toLowerCase().includes('fake') || (data.label || '').toLowerCase().includes('deepfake');
-      const conf = Math.round((data.confidence || 0.5) * 100);
-      result.innerHTML = `
-        <div class="result-score ${isFake ? 'result-ai' : 'result-human'}">${isFake ? '⚠' : '✓'}</div>
-        <div class="result-label">${isFake ? 'DEEPFAKE DETECTED' : 'REAL IMAGE'}</div>
-        <div style="font-size:9px;letter-spacing:2px;color:var(--muted);margin-bottom:8px">CONFIDENCE: ${conf}%</div>
-        <div class="result-bar"><div class="result-bar-fill" style="width:${conf}%;background:${isFake?'var(--red)':'var(--green)'}"></div></div>
-      `;
-      result.classList.add('show');
-    } catch (err) {
-      result.innerHTML = `<div style="color:var(--red);font-size:11px">⚠ Error: ${err.message}</div>`;
-      result.classList.add('show');
-    } finally {
-      btn.disabled = false; loader.classList.remove('show');
-    }
-  }
-
-  // ─── CERTIFICATE ───
-  async function generateCert() {
-    const name = document.getElementById('cert-name').value.trim();
-    const title = document.getElementById('cert-title').value.trim();
-    const text = document.getElementById('cert-text').value.trim();
-    if (!name || !title || text.length < 100) { showNotif('⚠ Fill all fields (min 100 chars)', 'var(--red)'); return; }
-    const btn = document.getElementById('cert-btn');
-    const loader = document.getElementById('cert-loader');
-    const result = document.getElementById('cert-result');
-    btn.disabled = true; loader.classList.add('show'); result.classList.remove('show');
-    try {
-      const res = await fetch(`${API_BASE}/generate-certificate`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, title, text })
-      });
-      const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      result.innerHTML = `
-        <div style="color:var(--green);font-size:11px;letter-spacing:2px;margin-bottom:12px">✓ CERTIFICATE GENERATED</div>
-        <div style="font-size:9px;letter-spacing:1px;color:var(--muted);line-height:2">
-          <div>CERT ID: <span style="color:var(--cyan)">${data.cert_id || 'LMR-' + Date.now()}</span></div>
-          <div>AUTHOR: <span style="color:var(--text)">${name}</span></div>
-          <div>DOCUMENT: <span style="color:var(--text)">${title}</span></div>
-          <div>FINGERPRINT: <span style="color:var(--cyan)">${data.fingerprint || 'FP-' + Math.random().toString(36).substr(2,12).toUpperCase()}</span></div>
-          <div>TIMESTAMP: <span style="color:var(--text)">${new Date().toISOString()}</span></div>
-        </div>
-      `;
-      result.classList.add('show');
-    } catch (err) {
-      result.innerHTML = `<div style="color:var(--red);font-size:11px">⚠ Error: ${err.message}</div>`;
-      result.classList.add('show');
-    } finally {
-      btn.disabled = false; loader.classList.remove('show');
-    }
-  }
-
-  // ─── FAQ ───
-  function toggleFaq(btn) {
-    const answer = btn.nextElementSibling;
-    const isOpen = btn.classList.contains('open');
-    document.querySelectorAll('.faq-q').forEach(q => {
-      q.classList.remove('open');
-      q.nextElementSibling.classList.remove('open');
-    });
-    if (!isOpen) { btn.classList.add('open'); answer.classList.add('open'); }
-  }
-
-  // ─── AUTH MODAL ───
-  function openAuth(tab) {
-    document.getElementById('auth-modal').classList.add('open');
-    switchTab(tab);
-  }
-
-  function closeAuth() {
-    document.getElementById('auth-modal').classList.remove('open');
-    document.getElementById('auth-success').style.display = 'none';
-    document.getElementById('login-form').style.display = 'block';
-    document.getElementById('signup-form').style.display = 'none';
-    switchTab('login');
-  }
-
-  function switchTab(tab) {
-    document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
-    document.getElementById('signup-form').style.display = tab === 'signup' ? 'block' : 'none';
-    document.getElementById('auth-success').style.display = 'none';
-    document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-    document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
-  }
-
-  function handleLogin() {
-    const email = document.getElementById('login-email').value.trim();
-    const pass = document.getElementById('login-pass').value;
-    if (!email || !pass) { showNotif('⚠ Enter email and password', 'var(--red)'); return; }
-    const users = JSON.parse(localStorage.getItem('AETHELX_users') || '{}');
-    if (!users[email] || users[email].pass !== pass) {
-      showNotif('⚠ Invalid credentials', 'var(--red)'); return;
-    }
-    localStorage.setItem('AETHELX_current', JSON.stringify({ email, name: users[email].name }));
-    document.getElementById('login-form').style.display = 'none';
-    document.getElementById('success-msg').textContent = `WELCOME BACK, ${users[email].name.toUpperCase()}!`;
-    document.getElementById('auth-success').style.display = 'block';
-    setTimeout(closeAuth, 2000);
-    showNotif('✓ Logged in successfully', 'var(--green)');
-  }
-
-  function handleSignup() {
-    const name = document.getElementById('signup-name').value.trim();
-    const email = document.getElementById('signup-email').value.trim();
-    const pass = document.getElementById('signup-pass').value;
-    if (!name || !email || pass.length < 8) { showNotif('⚠ Fill all fields (min 8 char password)', 'var(--red)'); return; }
-    const users = JSON.parse(localStorage.getItem('AETHELX_users') || '{}');
-    if (users[email]) { showNotif('⚠ Account already exists', 'var(--red)'); return; }
-    users[email] = { name, pass };
-    localStorage.setItem('AETHELX_users', JSON.stringify(users));
-    localStorage.setItem('AETHELX_current', JSON.stringify({ email, name }));
-    document.getElementById('signup-form').style.display = 'none';
-    document.getElementById('success-msg').textContent = `WELCOME TO AETHELX, ${name.toUpperCase()}!`;
-    document.getElementById('auth-success').style.display = 'block';
-    setTimeout(closeAuth, 2000);
-    showNotif('✓ Account created!', 'var(--green)');
-  }
-
-  // Close on overlay click
-  document.getElementById('auth-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeAuth();
-  });
-
-  // ─── WAITLIST ───
-  function openWaitlist(plan) {
-    document.getElementById('waitlist-plan-label').textContent = plan.toUpperCase() + ' PLAN';
-    document.getElementById('wl-success').style.display = 'none';
-    document.getElementById('wl-name').style.display = '';
-    document.getElementById('wl-email').style.display = '';
-    document.querySelector('[onclick="submitWaitlist()"]').style.display = '';
-    document.querySelector('.modal-sub', document.getElementById('waitlist-modal')).style.display = '';
-    document.getElementById('waitlist-modal').classList.add('open');
-  }
-
-  function closeWaitlist() {
-    document.getElementById('waitlist-modal').classList.remove('open');
-  }
-
-  function submitWaitlist() {
-    const name = document.getElementById('wl-name').value.trim();
-    const email = document.getElementById('wl-email').value.trim();
-    if (!name || !email) { showNotif('⚠ Enter name and email', 'var(--red)'); return; }
-    const plan = document.getElementById('waitlist-plan-label').textContent;
-    const waitlist = JSON.parse(localStorage.getItem('AETHELX_waitlist') || '[]');
-    waitlist.push({ name, email, plan, date: new Date().toISOString() });
-    localStorage.setItem('AETHELX_waitlist', JSON.stringify(waitlist));
-    document.getElementById('wl-name').style.display = 'none';
-    document.getElementById('wl-email').style.display = 'none';
-    document.querySelector('[onclick="submitWaitlist()"]').style.display = 'none';
-    document.getElementById('wl-success').style.display = 'block';
-    showNotif('🎯 You\'re on the waitlist!', 'var(--cyan)');
-    setTimeout(closeWaitlist, 3000);
-  }
-
-  document.getElementById('waitlist-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeWaitlist();
-  });
-</script>
+<script src="shared.js"></script>
 </body>
 </html>
