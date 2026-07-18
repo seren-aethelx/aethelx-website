@@ -41,6 +41,11 @@ function switchTab(tab) {
   document.getElementById('tab-login').classList.toggle('active', tab === 'login');
   document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
 }
+
+// NOTE: Login still checks against localStorage for now, since the backend
+// /signup route only stores new accounts — a matching /login (that checks
+// the password hash in Supabase) would be the next piece to add if you want
+// full login support across devices/browsers.
 function handleLogin() {
   const email = document.getElementById('login-email').value.trim();
   const pass = document.getElementById('login-pass').value;
@@ -54,21 +59,44 @@ function handleLogin() {
   setTimeout(closeAuth, 2000);
   showNotif('✓ Logged in successfully', 'var(--green)');
 }
-function handleSignup() {
+
+// Signup now calls the backend, which saves the account into the Supabase
+// "users" table (password is hashed server-side before storage).
+async function handleSignup() {
   const name = document.getElementById('signup-name').value.trim();
   const email = document.getElementById('signup-email').value.trim();
   const pass = document.getElementById('signup-pass').value;
   if (!name || !email || pass.length < 8) { showNotif('⚠ Fill all fields (min 8 char password)', 'var(--red)'); return; }
-  const users = JSON.parse(localStorage.getItem('AETHELX_users') || '{}');
-  if (users[email]) { showNotif('⚠ Account already exists', 'var(--red)'); return; }
-  users[email] = { name, pass };
-  localStorage.setItem('AETHELX_users', JSON.stringify(users));
-  localStorage.setItem('AETHELX_current', JSON.stringify({ email, name }));
-  document.getElementById('signup-form').style.display = 'none';
-  document.getElementById('success-msg').textContent = `WELCOME TO AETHELX, ${name.toUpperCase()}!`;
-  document.getElementById('auth-success').style.display = 'block';
-  setTimeout(closeAuth, 2000);
-  showNotif('✓ Account created!', 'var(--green)');
+
+  const btn = document.querySelector('#signup-form .btn-auth');
+  if (btn) btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password: pass })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    // Keep a local copy too, so login on this same browser still works
+    // immediately (see handleLogin note above).
+    const users = JSON.parse(localStorage.getItem('AETHELX_users') || '{}');
+    users[email] = { name, pass };
+    localStorage.setItem('AETHELX_users', JSON.stringify(users));
+    localStorage.setItem('AETHELX_current', JSON.stringify({ email, name }));
+
+    document.getElementById('signup-form').style.display = 'none';
+    document.getElementById('success-msg').textContent = `WELCOME TO AETHELX, ${name.toUpperCase()}!`;
+    document.getElementById('auth-success').style.display = 'block';
+    setTimeout(closeAuth, 2000);
+    showNotif('✓ Account created!', 'var(--green)');
+  } catch (err) {
+    showNotif(`⚠ ${err.message}`, 'var(--red)');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 }
 
 // ─── WAITLIST MODAL ───
@@ -81,20 +109,39 @@ function openWaitlist(plan) {
   document.getElementById('waitlist-modal').classList.add('open');
 }
 function closeWaitlist() { document.getElementById('waitlist-modal').classList.remove('open'); }
-function submitWaitlist() {
+
+// Waitlist submissions now go straight to the backend, which saves them
+// into the Supabase "waitlist" table — visible in your Supabase dashboard
+// under Table Editor > waitlist.
+async function submitWaitlist() {
   const name = document.getElementById('wl-name').value.trim();
   const email = document.getElementById('wl-email').value.trim();
   if (!name || !email) { showNotif('⚠ Enter name and email', 'var(--red)'); return; }
   const plan = document.getElementById('waitlist-plan-label').textContent;
-  const waitlist = JSON.parse(localStorage.getItem('AETHELX_waitlist') || '[]');
-  waitlist.push({ name, email, plan, date: new Date().toISOString() });
-  localStorage.setItem('AETHELX_waitlist', JSON.stringify(waitlist));
-  document.getElementById('wl-name').style.display = 'none';
-  document.getElementById('wl-email').style.display = 'none';
-  document.querySelector('[onclick="submitWaitlist()"]').style.display = 'none';
-  document.getElementById('wl-success').style.display = 'block';
-  showNotif('🎯 You\'re on the waitlist!', 'var(--cyan)');
-  setTimeout(closeWaitlist, 3000);
+
+  const btn = document.querySelector('[onclick="submitWaitlist()"]');
+  if (btn) btn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}/waitlist`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, plan })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    document.getElementById('wl-name').style.display = 'none';
+    document.getElementById('wl-email').style.display = 'none';
+    if (btn) btn.style.display = 'none';
+    document.getElementById('wl-success').style.display = 'block';
+    showNotif('🎯 You\'re on the waitlist!', 'var(--cyan)');
+    setTimeout(closeWaitlist, 3000);
+  } catch (err) {
+    showNotif(`⚠ ${err.message}`, 'var(--red)');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 }
 
 // close modals on outside click (only runs if elements exist on the page)
