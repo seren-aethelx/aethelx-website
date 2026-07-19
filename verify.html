@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Certificate Verification — AETHELX AI</title>
+<meta name="description" content="Publicly verify an AETHELX authorship certificate." />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png" />
+</head>
+<body>
+
+<nav>
+  <div>
+    <a href="index.html" class="nav-logo">AETHELX</a>
+    <span class="nav-badge">LIVE</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html#tools">Verify</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="index.html#about">About</a></li>
+  </ul>
+  <div class="nav-auth">
+    <button class="btn-login" onclick="openAuth('login')">Login</button>
+    <button class="btn-signup" onclick="openAuth('signup')">Sign Up</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <p class="page-tag mono">// Public Verification</p>
+  <h1 class="page-title" id="page-heading">CERTIFICATE<br>LOOKUP</h1>
+  <p class="page-sub" id="page-sub">Checking this certificate against AETHELX records...</p>
+</div>
+
+<div class="tool-page-wrap">
+  <div class="tool-card reveal visible" id="result-card">
+    <div id="loading-state" class="mono" style="text-align:center; padding:30px 0; color:var(--muted); letter-spacing:2px; font-size:12px;">
+      LOOKING UP CERTIFICATE...
+    </div>
+
+    <div id="found-state" style="display:none">
+      <div style="text-align:center; margin-bottom:24px;">
+        <span style="font-size:44px;">✅</span>
+        <div style="color:var(--green); font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:3px; margin-top:8px;">VERIFIED CERTIFICATE</div>
+      </div>
+      <div class="mono" style="font-size:12px; color:var(--muted); line-height:2.4; border-top:1px solid var(--border); padding-top:20px;">
+        <div>CERT ID: <span id="v-id" style="color:var(--cyan)"></span></div>
+        <div>AUTHOR: <span id="v-author" style="color:var(--text)"></span></div>
+        <div>DOCUMENT: <span id="v-title" style="color:var(--text)"></span></div>
+        <div>TRUST SCORE: <span id="v-trust" style="color:var(--text)"></span></div>
+        <div>AI PROBABILITY: <span id="v-ai" style="color:var(--text)"></span></div>
+        <div>FINGERPRINT: <span id="v-fp" style="color:var(--cyan)"></span></div>
+      </div>
+      <div style="margin-top:24px; font-size:12px; color:var(--muted); line-height:1.8; border-top:1px solid var(--border); padding-top:16px;">
+        This certificate was generated and recorded by AETHELX's authorship verification engine. It confirms the content matched the fingerprint above at the time of issuance.
+      </div>
+    </div>
+
+    <div id="notfound-state" style="display:none; text-align:center; padding:20px 0;">
+      <span style="font-size:44px;">⚠</span>
+      <div style="color:var(--red); font-family:'JetBrains Mono',monospace; font-size:13px; letter-spacing:2px; margin-top:12px;">CERTIFICATE NOT FOUND</div>
+      <div style="color:var(--muted); font-size:12px; margin-top:12px; line-height:1.8;">
+        This certificate ID doesn't match any record in AETHELX's system. Double-check the link, or the certificate may not exist.
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:30px;">
+    <a href="certificate.html" class="back-link">← Generate your own certificate</a>
+  </div>
+</div>
+
+<footer>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;color:var(--cyan);margin-bottom:16px;">AETHELX AI</div>
+  <div style="margin-bottom:16px;">
+    <a href="index.html#tools">Verify</a>
+    <a href="index.html#pricing">Pricing</a>
+    <a href="index.html#about">About</a>
+    <a href="mailto:hello@aethelx.com">Contact</a>
+  </div>
+  AETHELX © 2026 — AI Trust Infrastructure
+</footer>
+
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuth()">✕</button>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tab-login" onclick="switchTab('login')">LOGIN</button>
+      <button class="modal-tab" id="tab-signup" onclick="switchTab('signup')">SIGN UP</button>
+    </div>
+    <div id="login-form">
+      <div class="modal-title">WELCOME BACK</div>
+      <div class="modal-sub">Sign in to access your verification history and API keys.</div>
+      <div class="form-field"><label class="form-label">Email</label><input type="email" id="login-email" placeholder="you@domain.com" /></div>
+      <div class="form-field"><label class="form-label">Password</label><input type="password" id="login-pass" placeholder="••••••••" /></div>
+      <button class="btn-auth" onclick="handleLogin()">LOGIN →</button>
+      <div class="form-alt">No account? <a onclick="switchTab('signup')">Sign up free</a></div>
+    </div>
+    <div id="signup-form" style="display:none">
+      <div class="modal-title">JOIN AETHELX</div>
+      <div class="modal-sub">Create your free account. No credit card required.</div>
+      <div class="form-field"><label class="form-label">Full Name</label><input type="text" id="signup-name" placeholder="Seren Patil" /></div>
+      <div class="form-field"><label class="form-label">Email</label><input type="email" id="signup-email" placeholder="you@domain.com" /></div>
+      <div class="form-field"><label class="form-label">Password</label><input type="password" id="signup-pass" placeholder="Min 8 characters" /></div>
+      <button class="btn-auth" onclick="handleSignup()">CREATE ACCOUNT →</button>
+      <div class="form-alt">Have an account? <a onclick="switchTab('login')">Login</a></div>
+    </div>
+    <div class="auth-success" id="auth-success">
+      <span class="big">✅</span>
+      <p id="success-msg">ACCOUNT CREATED — WELCOME TO AETHELX</p>
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script src="shared.js"></script>
+<script>
+  async function loadCertificate() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+
+    if (!id) {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('notfound-state').style.display = 'block';
+      document.getElementById('page-sub').textContent = 'No certificate ID was provided in this link.';
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/verify-certificate?id=${encodeURIComponent(id)}`);
+      const data = await res.json();
+      document.getElementById('loading-state').style.display = 'none';
+
+      if (data.error || !data.cert_id) {
+        document.getElementById('notfound-state').style.display = 'block';
+        document.getElementById('page-sub').textContent = `No record found for "${id}".`;
+        return;
+      }
+
+      document.getElementById('page-heading').innerHTML = 'CERTIFICATE<br>VERIFIED';
+      document.getElementById('page-sub').textContent = 'This certificate is on record with AETHELX.';
+      document.getElementById('v-id').textContent = data.cert_id;
+      document.getElementById('v-author').textContent = data.author_name || '—';
+      document.getElementById('v-title').textContent = data.document_title || '—';
+      document.getElementById('v-trust').textContent = `${data.trust_score}/100`;
+      document.getElementById('v-ai').textContent = `${data.ai_probability}%`;
+      document.getElementById('v-fp').textContent = data.fingerprint || '—';
+      document.getElementById('found-state').style.display = 'block';
+    } catch (err) {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('notfound-state').style.display = 'block';
+      document.getElementById('page-sub').textContent = 'Something went wrong looking up this certificate.';
+    }
+  }
+
+  loadCertificate();
+</script>
+</body>
+</html>
