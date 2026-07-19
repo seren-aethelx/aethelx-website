@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Get the AETHELX Badge — AETHELX AI</title>
+<meta name="description" content="Add a free AETHELX Verified badge to your website in one line of code." />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png" />
+<style>
+  .badge-preview-box {
+    display: flex; gap: 20px; flex-wrap: wrap; margin: 30px 0;
+  }
+  .badge-preview-card {
+    flex: 1; min-width: 220px; padding: 30px; text-align: center;
+    border: 1px solid var(--border);
+  }
+  .badge-preview-card.dark { background: #07071a; }
+  .badge-preview-card.light { background: #f4f4f8; }
+  .badge-preview-card .label {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 2px;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 18px;
+  }
+  .code-box {
+    background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+    padding: 18px; font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--cyan); overflow-x: auto; white-space: pre; margin: 16px 0;
+    position: relative;
+  }
+  .copy-btn {
+    position: absolute; top: 10px; right: 10px;
+    background: transparent; border: 1px solid var(--cyan); color: var(--cyan);
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 1px;
+    padding: 6px 12px; cursor: pointer; text-transform: uppercase; transition: all 0.3s;
+  }
+  .copy-btn:hover { background: var(--cyan); color: #000; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div>
+    <a href="index.html" class="nav-logo">AETHELX</a>
+    <span class="nav-badge">LIVE</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html#tools">Verify</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="index.html#about">About</a></li>
+  </ul>
+  <div class="nav-auth">
+    <button class="btn-login" onclick="openAuth('login')">Login</button>
+    <button class="btn-signup" onclick="openAuth('signup')">Sign Up</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <p class="page-tag mono">// Free Embeddable Widget</p>
+  <h1 class="page-title">GET THE<br>TRUST BADGE</h1>
+  <p class="page-sub">Show your visitors your site takes AI content verification seriously. Free, one line of code, no account needed.</p>
+</div>
+
+<div class="tool-page-wrap" style="max-width:760px">
+  <div class="tool-card reveal">
+    <div class="tool-name" style="margin-bottom:20px">1. PREVIEW</div>
+    <div class="badge-preview-box">
+      <div class="badge-preview-card dark">
+        <div class="label">Dark Theme</div>
+        <script src="badge.js" data-theme="dark"></script>
+      </div>
+      <div class="badge-preview-card light">
+        <div class="label">Light Theme</div>
+        <script src="badge.js" data-theme="light"></script>
+      </div>
+    </div>
+
+    <div class="tool-name" style="margin-top:36px; margin-bottom:12px">2. COPY THE CODE</div>
+    <p style="font-size:13px; color:var(--muted); margin-bottom:8px;">Dark theme (for dark-background sites):</p>
+    <div class="code-box" id="code-dark">&lt;script src="https://aethelx.com/badge.js" data-theme="dark"&gt;&lt;/script&gt;
+      <button class="copy-btn" onclick="copyCode('code-dark')">Copy</button>
+    </div>
+
+    <p style="font-size:13px; color:var(--muted); margin-bottom:8px; margin-top:20px;">Light theme (for light-background sites):</p>
+    <div class="code-box" id="code-light">&lt;script src="https://aethelx.com/badge.js" data-theme="light"&gt;&lt;/script&gt;
+      <button class="copy-btn" onclick="copyCode('code-light')">Copy</button>
+    </div>
+
+    <div class="tool-name" style="margin-top:36px; margin-bottom:12px">3. PASTE IT</div>
+    <p style="font-size:13px; color:var(--muted); line-height:1.8;">
+      Paste the snippet anywhere in your website's HTML — a footer, sidebar, or about page work well.
+      The badge renders instantly and links back to AETHELX. No account, no API key, no cost.
+    </p>
+  </div>
+</div>
+
+<footer>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;color:var(--cyan);margin-bottom:16px;">AETHELX AI</div>
+  <div style="margin-bottom:16px;">
+    <a href="index.html#tools">Verify</a>
+    <a href="index.html#pricing">Pricing</a>
+    <a href="index.html#about">About</a>
+    <a href="mailto:hello@aethelx.com">Contact</a>
+  </div>
+  AETHELX © 2026 — AI Trust Infrastructure
+</footer>
+
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuth()">✕</button>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tab-login" onclick="switchTab('login')">LOGIN</button>
+      <button class="modal-tab" id="tab-signup" onclick="switchTab('signup')">SIGN UP</button>
+    </div>
+    <div id="login-form">
+      <div class="modal-title">WELCOME BACK</div>
+      <div class="modal-sub">Sign in to access your verification history and API keys.</div>
+      <div class="form-field"><label class="form-label">Email</label><input type="email" id="login-email" placeholder="you@domain.com" /></div>
+      <div class="form-field"><label class="form-label">Password</label><input type="password" id="login-pass" placeholder="••••••••" /></div>
+      <button class="btn-auth" onclick="handleLogin()">LOGIN →</button>
+      <div class="form-alt">No account? <a onclick="switchTab('signup')">Sign up free</a></div>
+    </div>
+    <div id="signup-form" style="display:none">
+      <div class="modal-title">JOIN AETHELX</div>
+      <div class="modal-sub">Create your free account. No credit card required.</div>
+      <div class="form-field"><label class="form-label">Full Name</label><input type="text" id="signup-name" placeholder="Seren Patil" /></div>
+      <div class="form-field"><label class="form-label">Email</label><input type="email" id="signup-email" placeholder="you@domain.com" /></div>
+      <div class="form-field"><label class="form-label">Password</label><input type="password" id="signup-pass" placeholder="Min 8 characters" /></div>
+      <button class="btn-auth" onclick="handleSignup()">CREATE ACCOUNT →</button>
+      <div class="form-alt">Have an account? <a onclick="switchTab('login')">Login</a></div>
+    </div>
+    <div class="auth-success" id="auth-success">
+      <span class="big">✅</span>
+      <p id="success-msg">ACCOUNT CREATED — WELCOME TO AETHELX</p>
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script src="shared.js"></script>
+<script>
+  function copyCode(id) {
+    const box = document.getElementById(id);
+    const text = box.childNodes[0].textContent.trim();
+    navigator.clipboard.writeText(text).then(() => {
+      showNotif('✓ Code copied!', 'var(--green)');
+    }).catch(() => {
+      showNotif('⚠ Could not copy — select manually', 'var(--red)');
+    });
+  }
+</script>
+</body>
+</html>
