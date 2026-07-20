@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Voice Cloning Detector — AETHELX AI</title>
+<meta name="description" content="Upload an audio clip to check if it's a real human voice or an AI voice clone." />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png" />
+</head>
+<body>
+
+<nav>
+  <div>
+    <a href="index.html" class="nav-logo">AETHELX</a>
+    <span class="nav-badge">LIVE</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="index.html#tools" class="active">Verify</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="index.html#about">About</a></li>
+  </ul>
+  <div class="nav-auth">
+    <button class="btn-login" onclick="openAuth('login')">Login</button>
+    <button class="btn-signup" onclick="openAuth('signup')">Sign Up</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <p class="page-tag mono">// Voice Cloning Detector</p>
+  <h1 class="page-title">IS THIS VOICE<br>REAL?</h1>
+  <p class="page-sub">Upload a short audio clip to check whether it's a genuine human voice or an AI-cloned voice — the kind used in voice-based scams.</p>
+  <a href="index.html#tools" class="back-link">← Back to all tools</a>
+</div>
+
+<div class="tool-page-wrap">
+  <div class="tool-card reveal">
+    <span class="tool-icon">🎙️</span>
+    <div class="tool-name">Voice Cloning Detector</div>
+    <div class="tool-model mono">wav2vec2-deepfake-audio-classification</div>
+    <div class="tool-disclaimer">
+      <strong>Beta accuracy:</strong> works best on clear speech with minimal background noise.
+      Short clips (3–15 seconds) of a single speaker give the most reliable results.
+      If you suspect a real financial scam call, don't rely on this alone — verify directly with the person through a separate, trusted channel.
+    </div>
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('audio-input').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+      <input type="file" id="audio-input" accept="audio/*" onchange="fileSelected(event)" />
+      <div class="drop-text">DROP AUDIO FILE HERE<br><small class="mono">MP3 · WAV · M4A · OGG · Max 10MB</small></div>
+    </div>
+    <div id="audio-preview-wrap" style="display:none; margin-top:16px;">
+      <audio id="audio-preview" controls style="width:100%;"></audio>
+    </div>
+    <button class="btn-action" id="audio-btn" onclick="analyzeAudio()">SCAN VOICE →</button>
+    <div class="loader mono" id="audio-loader">ANALYZING VOICE PATTERNS...</div>
+    <div class="result-box" id="audio-result"></div>
+  </div>
+</div>
+
+<footer>
+  <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;color:var(--cyan);margin-bottom:16px;">AETHELX AI</div>
+  <div style="margin-bottom:16px;">
+    <a href="index.html#tools">Verify</a>
+    <a href="index.html#pricing">Pricing</a>
+    <a href="index.html#about">About</a>
+    <a href="mailto:hello@aethelx.com">Contact</a>
+  </div>
+  AETHELX © 2026 — AI Trust Infrastructure
+</footer>
+
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuth()">✕</button>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tab-login" onclick="switchTab('login')">LOGIN</button>
+      <button class="modal-tab" id="tab-signup" onclick="switchTab('signup')">SIGN UP</button>
+    </div>
+    <div id="login-form">
+      <div class="modal-title">WELCOME BACK</div>
+      <div class="modal-sub">Sign in to access your verification history and API keys.</div>
+      <div class="form-field"><label class="form-label">Email</label><input type="email" id="login-email" placeholder="you@domain.com" /></div>
+      <div class="form-field"><label class="form-label">Password</label><input type="password" id="login-pass" placeholder="••••••••" /></div>
+      <button class="btn-auth" onclick="handleLogin()">LOGIN →</button>
+      <div class="form-alt">No account? <a onclick="switchTab('signup')">Sign up free</a></div>
+    </div>
+    <div id="signup-form" style="display:none">
+      <div class="modal-title">JOIN AETHELX</div>
+      <div class="modal-sub">Create your free account. No credit card required.</div>
+      <div class="form-field"><label class="form-label">Full Name</label><input type="text" id="signup-name" placeholder="Seren Patil" /></div>
+      <div class="form-field"><label class="form-label">Email</label><input type="email" id="signup-email" placeholder="you@domain.com" /></div>
+      <div class="form-field"><label class="form-label">Password</label><input type="password" id="signup-pass" placeholder="Min 8 characters" /></div>
+      <button class="btn-auth" onclick="handleSignup()">CREATE ACCOUNT →</button>
+      <div class="form-alt">Have an account? <a onclick="switchTab('login')">Login</a></div>
+    </div>
+    <div class="auth-success" id="auth-success">
+      <span class="big">✅</span>
+      <p id="success-msg">ACCOUNT CREATED — WELCOME TO AETHELX</p>
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script src="shared.js"></script>
+<script>
+  let selectedAudioFile = null;
+
+  function dragOver(e) { e.preventDefault(); document.getElementById('drop-zone').classList.add('drag-over'); }
+  function dragLeave(e) { document.getElementById('drop-zone').classList.remove('drag-over'); }
+  function dropFile(e) {
+    e.preventDefault();
+    document.getElementById('drop-zone').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) processAudioFile(file);
+  }
+  function fileSelected(e) {
+    const file = e.target.files[0];
+    if (file) processAudioFile(file);
+  }
+  function processAudioFile(file) {
+    if (file.size > 10 * 1024 * 1024) { showNotif('⚠ File too large. Max 10MB', 'var(--red)'); return; }
+    selectedAudioFile = file;
+    const preview = document.getElementById('audio-preview');
+    preview.src = URL.createObjectURL(file);
+    document.getElementById('audio-preview-wrap').style.display = 'block';
+    showNotif('✓ Audio loaded — click SCAN', 'var(--green)');
+  }
+
+  async function analyzeAudio() {
+    if (!selectedAudioFile) { showNotif('⚠ Upload an audio file first', 'var(--red)'); return; }
+    const btn = document.getElementById('audio-btn');
+    const loader = document.getElementById('audio-loader');
+    const result = document.getElementById('audio-result');
+    btn.disabled = true; loader.classList.add('show'); result.classList.remove('show');
+    const formData = new FormData();
+    formData.append('audio', selectedAudioFile);
+    try {
+      const res = await fetch(`${API_BASE}/detect-audio`, { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      const isFake = (data.label || '').toLowerCase().includes('cloned') || (data.label || '').toLowerCase().includes('ai voice');
+      const conf = Math.round((data.confidence || 0.5) * 100);
+      result.innerHTML = `
+        <div class="result-score ${isFake ? 'result-ai' : 'result-human'}">${isFake ? '⚠' : '✓'}</div>
+        <div class="result-label mono">${data.label || (isFake ? 'AI VOICE DETECTED' : 'LIKELY REAL VOICE')}</div>
+        <div class="mono" style="font-size:9px;letter-spacing:2px;color:var(--muted);margin-bottom:8px">CONFIDENCE: ${conf}%</div>
+        <div class="result-bar"><div class="result-bar-fill" style="width:${conf}%;background:${isFake?'var(--red)':'var(--green)'}"></div></div>
+        <div style="margin-top:14px;font-size:11px;color:var(--muted);border-top:1px solid var(--border);padding-top:12px">⚠ Beta model — treat as one signal, not a final verdict. Never send money based solely on a voice call without independent verification.</div>
+      `;
+      result.classList.add('show');
+    } catch (err) {
+      result.innerHTML = `<div style="color:var(--red);font-size:13px">⚠ Error: ${err.message}. The model may be waking up — try again in 20 seconds.</div>`;
+      result.classList.add('show');
+    } finally {
+      btn.disabled = false; loader.classList.remove('show');
+    }
+  }
+</script>
+</body>
+</html>
