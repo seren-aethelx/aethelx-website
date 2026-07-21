@@ -115,6 +115,15 @@
       if (data.error) throw new Error(data.error);
 
       const shareUrl = data.verify_url || `https://aethelx.com/verify.html?id=${data.cert_id}`;
+      const blockchainStatus = data.blockchain_status || 'unavailable';
+      let blockchainHtml = '';
+      if (blockchainStatus === 'pending') {
+        blockchainHtml = `<div style="margin-top:8px; font-size:11px; color:var(--cyan);">⛓ Blockchain timestamp: <strong>submitted</strong> — Bitcoin confirmation usually takes a few hours.</div>`;
+      } else if (blockchainStatus === 'confirmed') {
+        blockchainHtml = `<div style="margin-top:8px; font-size:11px; color:var(--green);">⛓ Blockchain timestamp: <strong>confirmed on Bitcoin</strong></div>`;
+      } else {
+        blockchainHtml = `<div style="margin-top:8px; font-size:11px; color:var(--muted);">⛓ Blockchain timestamp: not available for this certificate.</div>`;
+      }
 
       result.innerHTML = `
         <div style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;margin-bottom:12px">✓ CERTIFICATE GENERATED</div>
@@ -125,6 +134,7 @@
           <div>FINGERPRINT: <span style="color:var(--cyan)">${data.fingerprint || '—'}</span></div>
           <div>TIMESTAMP: <span style="color:var(--text)">${new Date().toISOString()}</span></div>
         </div>
+        ${blockchainHtml}
         <div style="margin-top:18px; border-top:1px solid var(--border); padding-top:16px;">
           <div class="mono" style="font-size:9px;letter-spacing:2px;color:var(--muted);margin-bottom:8px">SHAREABLE PUBLIC LINK</div>
           <div style="display:flex; gap:8px; align-items:center;">
